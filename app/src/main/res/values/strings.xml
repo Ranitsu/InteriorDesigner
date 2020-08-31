@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">InteriorDesigner</string>
+    <string name="title_activity_start">StartActivity</string>
+
+    <string name="furniture_catalog_btn">Catalog</string>
+    <string name="furniture_catalog_title">Furniture catalog</string>
+
+    <string name="btn_newProject">New project</string>
+    <string name="title_newProject">New Project</string>
+
+    <string name="allCategory">All categories</string>
+
+    <string name="projectName">Project name</string>
+    <string name="description">Description</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+
+    <string name="backToMenu">Back to menu</string>
+
+    <string name="DB_notAvailable">Database is not available</string>
+
+</resources>
