@@ -1,6 +1,5 @@
-package com.interiordesigner;
+package com.interiordesigner.CardsAdapters;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.interiordesigner.Classes.Project;
+import com.interiordesigner.R;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class ProjectCardAdapter extends RecyclerView.Adapter<ProjectCardAdapter.
         }
     }
 
-    interface Listener {
+    public interface Listener {
         void onClick(int id);
     }
 

@@ -4,6 +4,7 @@
 
     <string name="furniture_catalog_btn">Catalog</string>
     <string name="furniture_catalog_title">Furniture catalog</string>
+    <string name="furnitureImage">Furniture image</string>
 
     <string name="btn_newProject">New project</string>
     <string name="title_newProject">New Project</string>

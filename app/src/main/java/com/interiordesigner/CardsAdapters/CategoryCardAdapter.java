@@ -1,4 +1,4 @@
-package com.interiordesigner;
+package com.interiordesigner.CardsAdapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +9,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.interiordesigner.Classes.Category;
-
-import org.w3c.dom.Text;
+import com.interiordesigner.R;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class CategoryCardAdapter extends RecyclerView.Adapter<CategoryCardAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         CardView cardView = holder.cardView;
-        TextView nameView = cardView.findViewById(R.id.category_name);
+        TextView nameView = cardView.findViewById(R.id.furnitureName);
         nameView.setText(categories.get(position).GetName());
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +53,7 @@ public class CategoryCardAdapter extends RecyclerView.Adapter<CategoryCardAdapte
         }
     }
 
-    interface Listener {
+    public interface Listener {
         void onClick(int id);
     }
 }

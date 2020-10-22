@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Category {
-    int id;
-    String name;
-    int parentId;
+    private int id;
+    private String name;
+    private int parentId;
 
     public Category(String name) {
         this.name = name;

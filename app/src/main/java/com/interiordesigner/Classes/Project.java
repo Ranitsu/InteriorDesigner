@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Project {
-    private int _id;
+    private int id;
     private String name;
     private String description;
     private LocalDate createDate;
@@ -32,7 +32,7 @@ public class Project {
     }
 
     public Project (int id, String name, int thumbnailId) {
-        this._id = id;
+        this.id = id;
         this.name = name;
         if (thumbnailId == 0)
             this.thumbnailId = R.drawable.thumbnail;
@@ -42,7 +42,7 @@ public class Project {
     }
 
     public Project(int id, String name, String description, String createDate, int thumbnailId) {
-        this._id = id;
+        this.id = id;
         this.name = name;
         this.description = description;
         this.createDate = LocalDate.parse(createDate);
@@ -53,7 +53,7 @@ public class Project {
         }
     }
 
-    public int GetId() { return this._id; }
+    public int GetId() { return this.id; }
     public String GetName() { return this.name; }
     public String GetDescription() { return this.description; }
     public int GetThumbnailId(){

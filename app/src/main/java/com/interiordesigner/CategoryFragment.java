@@ -1,11 +1,6 @@
 package com.interiordesigner;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,11 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.interiordesigner.CardsAdapters.CategoryCardAdapter;
 import com.interiordesigner.Classes.Category;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
