@@ -1,65 +1,56 @@
 package com.interiordesigner;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.shapes.Shape;
 import android.net.Uri;
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.ar.core.Anchor;
-import com.google.ar.core.HitResult;
-import com.google.ar.core.Plane;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
-import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Camera;
 import com.google.ar.sceneform.HitTestResult;
-import com.google.ar.sceneform.Node;
-import com.google.ar.sceneform.NodeParent;
 import com.google.ar.sceneform.SceneView;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.ux.ArFragment;
+import com.google.ar.sceneform.rendering.Renderable;
+import com.google.ar.sceneform.rendering.Renderer;
+import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer;
-import com.google.ar.sceneform.ux.TransformableNode;
 import com.google.ar.sceneform.ux.TransformationSystem;
+import com.interiordesigner.Classes.Color;
 import com.interiordesigner.Classes.Furniture;
 import com.interiordesigner.Nodes.MyTransformableNode;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.util.concurrent.CompletableFuture;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 public class FurnitureDetails extends AppCompatActivity {
     public static final String EXTRA_FURNITURE_ID = "furniture_id";
 
     private Furniture furniture;
     private SceneView sceneView;
+    private String modelId = "ModelUID";
     private ModelRenderable modelRenderable;
     private MyTransformableNode node;
+    private Color[] colors;
+
+    private String modelPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        colors = Color.Colors;
 
         int furnitureId = (Integer) getIntent().getExtras().get(EXTRA_FURNITURE_ID);
         furniture = Furniture.GetFurniture(furnitureId);
@@ -72,6 +63,31 @@ public class FurnitureDetails extends AppCompatActivity {
 
         Button btnReset = findViewById(R.id.btnReset);
         Button btnAR = findViewById(R.id.btnAR);
+
+
+        int[] furnitureColors = furniture.GetColorsIds();
+
+        RadioGroup radioGroup = findViewById(R.id.colorsRadiosGroup);
+        radioGroup.setOrientation(RadioGroup.VERTICAL);
+
+        RadioButton[] colorsRadios = new RadioButton[furnitureColors.length];
+        for (int i = 0; i < furnitureColors.length; i++) {
+            colorsRadios[i] = new RadioButton(this);
+            colorsRadios[i].setText(Color.GetById(furnitureColors[i]).GetName());
+            colorsRadios[i].setId(i);
+            radioGroup.addView(colorsRadios[i]);
+        }
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                modelPath = furniture.GetModelsPaths()[checkedRadioButtonId];
+                createModel(modelPath);
+            }
+        });
+
+        colorsRadios[0].toggle();
 
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,29 +107,31 @@ public class FurnitureDetails extends AppCompatActivity {
         Camera camera = sceneView.getScene().getCamera();
         camera.setLocalPosition(new Vector3(0f, furniture.GetModelRadius(), furniture.GetModelRadius()));
         camera.setLocalRotation(Quaternion.axisAngle(Vector3.right(), -30.0f));
+        //createModel(modelPath);
+    }
+
+    private void createModel(String pathToModel) {
         ModelRenderable.builder()
-                .setSource(this, Uri.parse(furniture.GetModelName()))
-                .setRegistryId(modelRenderable)
+                .setSource(this, Uri.parse(pathToModel))
+                .setIsFilamentGltf(true)
+                .setRegistryId(pathToModel)
                 .build()
                 .thenAccept(renderable -> addNodeToScene(renderable))
                 .exceptionally(
-                throwable -> {
-                    Toast toast =
-                            Toast.makeText(this, "Unable to load furniture model", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                    return null;
-                });
-    }
-
-    private TransformationSystem makeTransformationSystem() {
-        FootprintSelectionVisualizer footpringSelectionVisualizer = new FootprintSelectionVisualizer();
-        return new TransformationSystem(this.getResources().getDisplayMetrics(), footpringSelectionVisualizer);
+                        throwable -> {
+                            Toast toast =
+                                    Toast.makeText(this, "Unable to load furniture model", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                            return null;
+                        });
     }
 
     private void addNodeToScene(ModelRenderable model) {
         if (sceneView != null) {
             TransformationSystem ts = makeTransformationSystem();
+            if (node != null)
+                sceneView.getScene().removeChild(node);
             node = new MyTransformableNode(furniture.GetModelRadius(), ts);
             node.setRenderable(model);
             node.setLocalPosition(new Vector3(0F, 0F, 0F));
@@ -123,8 +141,12 @@ public class FurnitureDetails extends AppCompatActivity {
                     (HitTestResult hitTestResult, MotionEvent motionEvent) -> {
                         ts.onTouch(hitTestResult, motionEvent);
                     });
-
         }
+    }
+
+    private TransformationSystem makeTransformationSystem() {
+        FootprintSelectionVisualizer footpringSelectionVisualizer = new FootprintSelectionVisualizer();
+        return new TransformationSystem(this.getResources().getDisplayMetrics(), footpringSelectionVisualizer);
     }
 
     @Override
@@ -152,6 +174,7 @@ public class FurnitureDetails extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 }
 
 

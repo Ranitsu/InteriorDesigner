@@ -56,7 +56,7 @@ public class MyRotationController extends BaseTransformationController<DragGestu
         double deltaAngleY = rotationAmountY;
         double deltaAngleX = rotationAmountX;
 
-        horizontalAngle -= deltaAngleX;
+        horizontalAngle += deltaAngleX;
         verticalAngle += deltaAngleY;
 
         verticalAngle = Math.max(Math.min(verticalAngle, 90.0), 0.0);
