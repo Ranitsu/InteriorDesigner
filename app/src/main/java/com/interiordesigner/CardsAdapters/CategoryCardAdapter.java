@@ -14,13 +14,13 @@ import com.interiordesigner.R;
 import java.util.List;
 
 public class CategoryCardAdapter extends RecyclerView.Adapter<CategoryCardAdapter.ViewHolder> {
-    private List<Category> categories;
+    private Category[] categories;
     private Listener listener;
 
-    public CategoryCardAdapter(List<Category> categories) { this.categories = categories; }
+    public CategoryCardAdapter(Category[] categories) { this.categories = categories; }
 
     @Override
-    public int getItemCount() { return categories.size(); }
+    public int getItemCount() { return categories.length; }
 
     public void setListener(Listener listener) { this.listener = listener; }
 
@@ -34,12 +34,12 @@ public class CategoryCardAdapter extends RecyclerView.Adapter<CategoryCardAdapte
     public void onBindViewHolder(ViewHolder holder, final int position) {
         CardView cardView = holder.cardView;
         TextView nameView = cardView.findViewById(R.id.furnitureName);
-        nameView.setText(categories.get(position).GetName());
+        nameView.setText(categories[position].GetName());
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null)
-                    listener.onClick(categories.get(position).GetId());
+                    listener.onClick(categories[position].GetId());
             }
         });
     }

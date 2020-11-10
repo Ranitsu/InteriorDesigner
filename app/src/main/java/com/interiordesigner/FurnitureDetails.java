@@ -3,14 +3,12 @@ package com.interiordesigner;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.drawable.shapes.Shape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -23,16 +21,11 @@ import com.google.ar.sceneform.SceneView;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.rendering.Renderable;
-import com.google.ar.sceneform.rendering.Renderer;
-import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.ux.FootprintSelectionVisualizer;
 import com.google.ar.sceneform.ux.TransformationSystem;
 import com.interiordesigner.Classes.Color;
 import com.interiordesigner.Classes.Furniture;
 import com.interiordesigner.Nodes.MyTransformableNode;
-
-import java.util.concurrent.CompletableFuture;
 
 public class FurnitureDetails extends AppCompatActivity {
     public static final String EXTRA_FURNITURE_ID = "furniture_id";
@@ -53,7 +46,7 @@ public class FurnitureDetails extends AppCompatActivity {
         colors = Color.Colors;
 
         int furnitureId = (Integer) getIntent().getExtras().get(EXTRA_FURNITURE_ID);
-        furniture = Furniture.GetFurniture(furnitureId);
+        furniture = Furniture.GetById(furnitureId);
 
         setContentView(R.layout.activity_furniture_details);
         sceneView = (SceneView) findViewById(R.id.objectPreview);

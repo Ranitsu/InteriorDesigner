@@ -17,17 +17,6 @@ public class Color {
     private int miniatureColor;
     private int miniatureBorderColor;
 
-    public Color(String name) {
-        this.name = name;
-        this.miniatureColor = R.color.blue;
-    }
-
-    public Color(String name, int miniatureColor) {
-        this.name = name;
-        this.miniatureColor = miniatureColor;
-        this.miniatureBorderColor = miniatureColor;
-    }
-
     public Color(int id, String name, int miniatureColor) {
         this.id = id;
         this.name = name;

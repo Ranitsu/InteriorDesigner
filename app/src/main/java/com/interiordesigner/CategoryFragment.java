@@ -16,11 +16,9 @@ import android.widget.TextView;
 import com.interiordesigner.CardsAdapters.CategoryCardAdapter;
 import com.interiordesigner.Classes.Category;
 
-import java.util.List;
-
 
 public class CategoryFragment extends Fragment {
-    private List<Category> categories;
+    private Category[] categories;
     private int parentId;
 
     public CategoryFragment(int parentId) {
@@ -41,21 +39,21 @@ public class CategoryFragment extends Fragment {
             categoryNameText.setText(R.string.allCategory);
         } else {
             String categoryName = "NO NAME";
-            List<Category> allCategories = ((CatalogActivity)getActivity()).GetAllCategories();
+            Category[] allCategories = Category.Categories;
             for (Category category : allCategories) {
                 if (category.GetId() == parentId)
                 {
                     categoryName = category.GetName();
                     break;
                 }
-
             }
 
             categoryNameText.setText(categoryName);
         }
 
 
-        categories = ((CatalogActivity)getActivity()).GetCategoriesByParentId(parentId);
+
+        categories = Category.GetByParentId(parentId);
 
         CategoryCardAdapter adapter = new CategoryCardAdapter(categories);
         categoryRecycler.setAdapter(adapter);
@@ -65,8 +63,8 @@ public class CategoryFragment extends Fragment {
         adapter.setListener(new CategoryCardAdapter.Listener() {
             @Override
             public void onClick(int id) {
-                categories = ((CatalogActivity)getActivity()).GetCategoriesByParentId(id);
-                if (categories.isEmpty()) {
+                categories = Category.GetByParentId(id);
+                if (categories.length == 0) {
                     Intent intent = new Intent(getActivity(), FurniturePreviewActivity.class);
                     intent.putExtra(FurniturePreviewActivity.EXTRA_CATEGORY_ID, id);
                     startActivity(intent);

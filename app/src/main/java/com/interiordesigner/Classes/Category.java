@@ -17,11 +17,6 @@ public class Category {
         this.name = name;
     }
 
-    public Category(String name, int parentId) {
-        this.name = name;
-        this.parentId = parentId;
-    }
-
     public Category(int id, String name, int parentId) {
         this.id = id;
         this.name = name;
@@ -32,24 +27,48 @@ public class Category {
     public String GetName() { return this.name; }
     public int GetParentId() { return this.parentId; }
 
-    public static List<Category> getCategories() {
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Sofas and armchairs"));
-        categories.add(new Category("Wardrobes and chests of drawers"));
-        categories.add(new Category("Beds"));
+    public static Category[] Categories = new Category[] {
+            new Category(1, "Sofas and armchairs"),
+            new Category(2, "Wardrobes and chests of drawers"),
+            new Category(3, "Beds"),
 
-        return categories;
+            new Category(10, "Sofas", 1),
+            new Category(11, "Armchairs", 1),
+            new Category(12, "Footrests", 1),
+
+            new Category(20, "Wardrobes", 2),
+            new Category(21, "Chests of drawers", 2),
+            new Category(22, "Racks", 2)
+    };
+
+    public static Category GetById(int id) {
+        for (Category category: Categories) {
+            if (category.id == id)
+                return category;
+        }
+        return null;
     }
 
-    public static List<Category> getCategoriesLv2() {
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Sofas", 1));
-        categories.add(new Category("Armchairs", 1));
-        categories.add(new Category("Footrests", 1));
+    public static Category[] GetByParentId(int parentId) {
+        Category[] categories;
+        int counter = 0;
 
-        categories.add(new Category("Wardrobes", 2));
-        categories.add(new Category("Chests of drawers", 2));
-        categories.add(new Category("Racks", 2));
+        for (Category category: Categories) {
+            if (category.parentId == parentId)
+                counter++;
+        }
+
+        int index = 0;
+        categories = new Category[counter];
+        for (Category category: Categories) {
+            if (category.parentId == parentId) {
+                categories[index] = category;
+                index++;
+            }
+
+            if (index == counter)
+                break;
+        }
 
         return categories;
     }

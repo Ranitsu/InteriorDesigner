@@ -61,22 +61,46 @@ public class Furniture {
     public String[] GetModelsPaths() { return modelsPaths; }
     public float GetModelRadius() { return modelRadius; }
 
-    public static Furniture[] furnitures = new Furniture[] {
-        new Furniture(1, "Angsta", 4, new int[] {4, 5}, "models/simple_table/", 3),
-        new Furniture(1, "Simple Table", 4, new int[] {4, 5}, new String[]{"models/simple_table/simple_table.glb", "models/simple_table/simple_table_v2.glb"}, 3),
-        new Furniture(2, "Asarum", 4, new int[] {1, 3}, "models/simple_table/simple_table_v2.glb", 3),
-        new Furniture(3, "Nyhamn", 4, new int[] {1}, "models/cube.glb", 3)
+    public static Furniture[] Furnitures = new Furniture[] {
+        new Furniture(1, "Angsta", 11, new int[] {4, 5}, "models/simple_table/", 3),
+        new Furniture(2, "Simple Table", 11, new int[] {4, 5}, new String[]{"models/simple_table/simple_table.glb", "models/simple_table/simple_table_v2.glb"}, 3),
+        new Furniture(3, "Asarum", 11, new int[] {1, 3}, "models/simple_table/simple_table_v2.glb", 3),
+        new Furniture(4, "Nyhamn", 11, new int[] {1}, "models/cube.glb", 3)
     };
 
-    public static Furniture GetFurniture(int id) {
+    public static Furniture GetById(int id) {
         Furniture selectedFurniture = null;
 
-        for (Furniture furniture : furnitures) {
+        for (Furniture furniture : Furnitures) {
             if (furniture.id == id)
                 selectedFurniture = furniture;
         }
 
         return selectedFurniture;
+    }
+
+    public static Furniture[] GetByCategoryId(int categoryId) {
+        Furniture[] furnitures;
+        int counter = 0;
+
+        for (Furniture furniture: Furnitures) {
+            if (furniture.categoryId == categoryId)
+                counter++;
+        }
+
+        int index = 0;
+        furnitures = new Furniture[counter];
+        for (Furniture furniture: Furnitures) {
+            if (furniture.categoryId == categoryId) {
+                furnitures[index] = furniture;
+                index++;
+            }
+
+            if (index == counter)
+                break;
+        }
+
+        return furnitures;
     }
 
 }

@@ -43,17 +43,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 AddProject(db, project);
             }
         }
-        if (oldVersion < 2) {
-            CreateCategoryTable(db);
-            for (Category category : Category.getCategories()) {
-                AddCategory(db, category);
-            }
-        }
-        if (oldVersion < 3) {
-            for (Category category : Category.getCategoriesLv2()) {
-                AddCategory(db, category);
-            }
-        }
     }
 
     private void CreateProjectTable(SQLiteDatabase db) {
