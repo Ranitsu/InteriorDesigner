@@ -62,10 +62,7 @@ public class Furniture {
     public float GetModelRadius() { return modelRadius; }
 
     public static Furniture[] Furnitures = new Furniture[] {
-        new Furniture(1, "Angsta", 11, new int[] {4, 5}, "models/simple_table/", 3),
-        new Furniture(2, "Simple Table", 11, new int[] {4, 5}, new String[]{"models/simple_table/simple_table.glb", "models/simple_table/simple_table_v2.glb"}, 3),
-        new Furniture(3, "Asarum", 11, new int[] {1, 3}, "models/simple_table/simple_table_v2.glb", 3),
-        new Furniture(4, "Nyhamn", 11, new int[] {1}, "models/cube.glb", 3)
+        new Furniture(1, "Simple Table", 2, new int[] {4, 5}, new String[]{"models/simple_table/simple_table.glb", "models/simple_table/simple_table_v2.glb"}, 3)
     };
 
     public static Furniture GetById(int id) {

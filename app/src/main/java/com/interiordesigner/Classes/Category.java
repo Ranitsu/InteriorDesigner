@@ -28,17 +28,21 @@ public class Category {
     public int GetParentId() { return this.parentId; }
 
     public static Category[] Categories = new Category[] {
-            new Category(1, "Sofas and armchairs"),
-            new Category(2, "Wardrobes and chests of drawers"),
-            new Category(3, "Beds"),
+            new Category(1, "Test objects"),
+            new Category(2, "Table and chairs", 1),
+            new Category(3, "Sofas and armchairs", 1),
 
-            new Category(10, "Sofas", 1),
-            new Category(11, "Armchairs", 1),
-            new Category(12, "Footrests", 1),
-
-            new Category(20, "Wardrobes", 2),
-            new Category(21, "Chests of drawers", 2),
-            new Category(22, "Racks", 2)
+//            new Category(1, "Sofas and armchairs"),
+//            new Category(2, "Wardrobes and chests of drawers"),
+//            new Category(3, "Beds"),
+//
+//            new Category(10, "Sofas", 1),
+//            new Category(11, "Armchairs", 1),
+//            new Category(12, "Footrests", 1),
+//
+//            new Category(20, "Wardrobes", 2),
+//            new Category(21, "Chests of drawers", 2),
+//            new Category(22, "Racks", 2)
     };
 
     public static Category GetById(int id) {
