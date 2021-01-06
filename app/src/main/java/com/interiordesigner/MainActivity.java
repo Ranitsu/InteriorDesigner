@@ -38,4 +38,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, StartActivity.class);
         startActivity(intent);
     }
+
+    public void onClickCreateEditPlan(View view) {
+        Intent intent = new Intent(this, PlanActivity.class);
+        startActivity(intent);
+    }
 }
