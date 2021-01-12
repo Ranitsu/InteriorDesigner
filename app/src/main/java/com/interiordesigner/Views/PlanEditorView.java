@@ -22,8 +22,14 @@ import androidx.core.view.MotionEventCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.EdgeEffectCompat;
 
+import com.interiordesigner.Classes.PlanPoint;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlanEditorView extends View {
     private static final int SQUARE_SIZE = 100;
+    private static final int CIRCLE_RADIUS = 50;
 
     private int bitmapHeight = 1000;
     private int bitmapWidth = 1000;
@@ -38,6 +44,9 @@ public class PlanEditorView extends View {
     int scrollPosY = 0;
 
     float touchX, touchY;
+    boolean planIsComplite;
+
+    public List<PlanPoint> points;
 
     public PlanEditorView(Context context) {
         super(context);
@@ -61,12 +70,19 @@ public class PlanEditorView extends View {
     }
 
     private void init(@Nullable AttributeSet set) {
+        points = new ArrayList<PlanPoint>();
+        planIsComplite = false;
+
         bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         myCanvas = new Canvas(bitmap);
 
         PlanGestureListener gestureListener = new PlanGestureListener();
         detector = new GestureDetectorCompat( getContext(), gestureListener);
         detector.setOnDoubleTapListener(gestureListener);
+
+        points.add(new PlanPoint(150, 150, CIRCLE_RADIUS));
+        points.add(new PlanPoint(500, 150, CIRCLE_RADIUS));
+
     }
 
     @Override
@@ -81,36 +97,15 @@ public class PlanEditorView extends View {
         boolean result = this.detector.onTouchEvent(event);
         postInvalidate();
         return result;
-
-//                float newTouchX = event.getX();
-//                float newTouchY = event.getY();
-//
-//                scrollPosX += (int) (touchX - newTouchX);
-//                scrollPosY += (int) (touchY - newTouchY);
-//
-//                touchX = newTouchX;
-//                touchY = newTouchY;
-//                postInvalidate();
-//                return true;
-//        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         int width = getWidth();
         int height = getHeight();
-
-        Rect rect = new Rect();
-        rect.left = 10;
-        rect.top = 10;
-        rect.right = rect.left + SQUARE_SIZE;
-        rect.bottom = rect.top + SQUARE_SIZE;
-
-        Paint paint = new Paint();
-        paint.setColor(Color.GREEN);
-
-        //canvas = new Canvas(bitmap);
-        myCanvas.drawRect(rect, paint);
+        bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+        myCanvas = new Canvas(bitmap);
+        DrawPoints(myCanvas);
 
         canvas.drawBitmap(
                 bitmap,
@@ -121,9 +116,48 @@ public class PlanEditorView extends View {
                 new Rect(0, 0, width, height),
                 null
         );
+    }
 
+    private void DrawPoints(Canvas canvas)
+    {
+        Paint paint = new Paint();
+
+        for (int i = 0; i < points.size(); i++) {
+            if (i == 0)
+                paint.setColor(Color.GREEN);
+            else if (i == points.size() -1 && !planIsComplite)
+                paint.setColor(Color.RED);
+            else
+                paint.setColor(Color.BLACK);
+
+            canvas.drawCircle(points.get(i).getX(),
+                    points.get(i).getY(),
+                    points.get(i).getRadius(),
+                    paint);
+
+            if (i != 0) {
+                paint.setColor(Color.BLACK);
+                paint.setStrokeWidth(10);
+                canvas.drawLine(points.get(i-1).getX(),
+                                points.get(i-1).getY(),
+                                points.get(i).getX(),
+                                points.get(i).getY(),
+                                paint);
+            }
+        }
+
+        if (planIsComplite) {
+            paint.setColor(Color.BLACK);
+            paint.setStrokeWidth(10);
+            canvas.drawLine(points.get(0).getX(),
+                            points.get(0).getY(),
+                            points.get(points.size()-1).getX(),
+                            points.get(points.size()-1).getY(),
+                            paint);
+        }
 
     }
+
 
     void DrawCircle (Canvas canvas, float cx, float cy) {
         Paint paint = new Paint();
@@ -145,7 +179,19 @@ public class PlanEditorView extends View {
 
         @Override
         public boolean onSingleTapUp(MotionEvent event) {
-            DrawCircle(myCanvas, event.getX(), event.getY());
+            //DrawCircle(myCanvas, event.getX(), event.getY());
+            int x = (int) event.getX() + scrollPosX;
+            int y = (int) event.getY() + scrollPosY;
+
+            double dx = Math.pow(x - points.get(0).getX(), 2);
+            double dy = Math.pow(y - points.get(0).getY(), 2);
+
+            if (dx + dy < Math.pow(CIRCLE_RADIUS, 2) && points.size() >= 3) {
+                planIsComplite = true;
+            }
+            else if (!planIsComplite) {
+                points.add(new PlanPoint( x, y, CIRCLE_RADIUS));
+            }
 
             return true;
         }
