@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.OverScroller;
 
 import androidx.annotation.Nullable;
@@ -39,14 +40,17 @@ public class PlanEditorView extends View {
     private Bitmap bitmap;
     private Canvas myCanvas;
 
+    private Button btnDelete;
 
     int scrollPosX = 0;
     int scrollPosY = 0;
 
     float touchX, touchY;
     boolean planIsComplite;
+    boolean movePoint;
 
     public List<PlanPoint> points;
+    public PlanPoint selectedPoint;
 
     public PlanEditorView(Context context) {
         super(context);
@@ -82,6 +86,10 @@ public class PlanEditorView extends View {
 
         points.add(new PlanPoint(150, 150, CIRCLE_RADIUS));
         points.add(new PlanPoint(500, 150, CIRCLE_RADIUS));
+        selectedPoint = points.get(1);
+
+        movePoint = false;
+        //btnDelete = new Button();
 
     }
 
@@ -92,6 +100,7 @@ public class PlanEditorView extends View {
         if (action == MotionEvent.ACTION_UP) {
             touchX = scrollPosX;
             touchY = scrollPosY;
+            movePoint = false;
         }
 
         boolean result = this.detector.onTouchEvent(event);
@@ -125,7 +134,7 @@ public class PlanEditorView extends View {
         for (int i = 0; i < points.size(); i++) {
             if (i == 0)
                 paint.setColor(Color.GREEN);
-            else if (i == points.size() -1 && !planIsComplite)
+            else if (points.get(i) == selectedPoint)
                 paint.setColor(Color.RED);
             else
                 paint.setColor(Color.BLACK);
@@ -159,13 +168,6 @@ public class PlanEditorView extends View {
     }
 
 
-    void DrawCircle (Canvas canvas, float cx, float cy) {
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        canvas.drawCircle(cx + scrollPosX, cy + scrollPosY, 40, paint);
-
-    }
-
     class PlanGestureListener extends GestureDetector.SimpleOnGestureListener implements GestureDetector.OnDoubleTapListener {
         private static final String DEBUG_TAG = "Gesture";
 
@@ -174,24 +176,33 @@ public class PlanEditorView extends View {
             touchX = event.getX();// - scrollPosX;
             touchY = event.getY();// - scrollPosY;
 
+            if (IsPointTapped(event))
+            {
+                movePoint = true;
+            }
+
             return true;
         }
 
         @Override
         public boolean onSingleTapUp(MotionEvent event) {
-            //DrawCircle(myCanvas, event.getX(), event.getY());
             int x = (int) event.getX() + scrollPosX;
             int y = (int) event.getY() + scrollPosY;
 
-            double dx = Math.pow(x - points.get(0).getX(), 2);
-            double dy = Math.pow(y - points.get(0).getY(), 2);
+            int selectedPointIndex = SelectPoint(event);
 
-            if (dx + dy < Math.pow(CIRCLE_RADIUS, 2) && points.size() >= 3) {
-                planIsComplite = true;
+            if (selectedPointIndex <= 0 && selectedPoint == points.get(points.size()-1) ) {
+                if (selectedPointIndex == 0 && points.size() >= 3) {
+                    planIsComplite = true;
+                } else if (!planIsComplite) {
+                    PlanPoint point = new PlanPoint(x, y, CIRCLE_RADIUS);
+                    points.add(point);
+                    selectedPoint = point;
+                }
             }
-            else if (!planIsComplite) {
-                points.add(new PlanPoint( x, y, CIRCLE_RADIUS));
-            }
+
+            if (selectedPointIndex > -1)
+                selectedPoint = points.get(selectedPointIndex);
 
             return true;
         }
@@ -210,18 +221,26 @@ public class PlanEditorView extends View {
         @Override
         public boolean onScroll(MotionEvent event1, MotionEvent event2,
                              float distanceX, float distanceY) {
-            Log.d("SCROLL", "X: " + scrollPosX + ", Y: " + scrollPosY);
 
-            float newTouchX = event2.getX();
-            float newTouchY = event2.getY();
 
-            scrollPosX += (int) (touchX - newTouchX);
-            scrollPosY += (int) (touchY - newTouchY);
+            if (movePoint)
+            {
+                int x = (int) event2.getX() + scrollPosX;;
+                int y = (int) event2.getY() + scrollPosY;;
+                selectedPoint.SetXY(x, y);
+            }
+            else
+            {
+                float newTouchX = event2.getX();
+                float newTouchY = event2.getY();
 
-            touchX = newTouchX;
-            touchY = newTouchY;
-            Log.d("TOUCH", "X: " + newTouchX + ", Y: " + newTouchY);
-            Log.d("SCROLL", "X: " + scrollPosX + ", Y: " + scrollPosY);
+                scrollPosX += (int) (touchX - newTouchX);
+                scrollPosY += (int) (touchY - newTouchY);
+
+                touchX = newTouchX;
+                touchY = newTouchY;
+            }
+
             return true;
         }
 
@@ -230,6 +249,34 @@ public class PlanEditorView extends View {
                                float velocitX, float velocityY) {
            // Log.d(DEBUG_TAG, "onFling: " + event1.toString() + event2.toString());
             return true;
+        }
+
+        private int SelectPoint(MotionEvent event) {
+            int result = -1;
+            int x = (int) event.getX() + scrollPosX;
+            int y = (int) event.getY() + scrollPosY;
+
+            for (int i = 0; i < points.size(); i++) {
+                PlanPoint point = points.get(i);
+                double dx = Math.pow(x - point.getX(), 2);
+                double dy = Math.pow(y - point.getY(), 2);
+
+                if (dx + dy < Math.pow(CIRCLE_RADIUS, 2)) {
+                    result = i;
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        private boolean IsPointTapped(MotionEvent event) {
+            int selectedPointIndex = SelectPoint(event);
+
+            if (selectedPointIndex >= 0)
+                return true;
+            else
+                return false;
         }
 
     }

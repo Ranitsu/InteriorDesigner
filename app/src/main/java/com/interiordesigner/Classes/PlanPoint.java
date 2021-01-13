@@ -20,4 +20,9 @@ public class PlanPoint {
         this.radius = r;
     }
 
+    public void SetXY(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
 }
