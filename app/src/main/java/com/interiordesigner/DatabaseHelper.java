@@ -20,7 +20,10 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "InteriorDesigner";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 1;
+
+    private static final String PROJECT = "Project";
+    private static final String ROOM_PLAN = "RoomPlan";
 
     DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -42,9 +45,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             for (Project project : Project.getProjects()) {
                 AddProject(db, project);
             }
+            CreateRoomPlanTable(db);
         }
     }
 
+    // Project
     private void CreateProjectTable(SQLiteDatabase db) {
         String query = "CREATE TABLE Project (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -58,49 +63,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
-    private void CreateCategoryTable(SQLiteDatabase db) {
-        String query = "CREATE TABLE Category (" +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "Name TEXT," +
-                "ParentId INTEGER" +
-                ")";
-
-        db.execSQL(query);
-    }
-
-    private void CreateFurnitureTable(SQLiteDatabase db) {
-        String query = "CREATE TABLE Furniture (" +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "Name TEXT," +
-                "CategoryId INTEGER," +
-                "PhotoId INTEGER" +
-                ")";
-
-        db.execSQL(query);
-    }
-
     public void AddProject(SQLiteDatabase db, Project project) {
         ContentValues projectValues = new ContentValues();
         projectValues.put("Name", project.GetName());
         projectValues.put("Description", project.GetDescription());
         projectValues.put("CreateDate", project.GetCreateDate().toString());
 
-        db.insert("Project", null, projectValues);
-    }
-
-    public void AddCategory(SQLiteDatabase db, Category category) {
-        ContentValues categoryValues = new ContentValues();
-        categoryValues.put("Name", category.GetName());
-        categoryValues.put("ParentId", category.GetParentId());
-
-        db.insert("Category", null, categoryValues);
-    }
-
-    public void AddFurniture(SQLiteDatabase db, Furniture furniture) {
-        ContentValues furnitureValues = new ContentValues();
-        furnitureValues.put("Name", furniture.GetName());
-        furnitureValues.put("PhotoId", furniture.GetPhotoId());
-        furnitureValues.put("CategoryId", furniture.GetCategoryId());
+        db.insert(PROJECT, null, projectValues);
     }
 
     public Project GetProject(int projectId) {
@@ -124,8 +93,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        db.close();
 
         return project;
+    }
+
+
+    // RoomPlan
+    private void CreateRoomPlanTable(SQLiteDatabase db) {
+        String query = "CREATE TABLE RoomPlan (" +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "ProjectId INTEGER," +
+                "PlanJson TEXT" +
+                ")";
+
+        db.execSQL(query);
+    }
+
+    public void AddRoomPlan(SQLiteDatabase db, int projectId, String json) {
+        ContentValues roomPlanValues = new ContentValues();
+        roomPlanValues.put("ProjectId", projectId);
+        roomPlanValues.put("PlanJson", json);
+
+        db.insert(ROOM_PLAN, null, roomPlanValues);
+    }
+
+    public String GetPlanJson(int projectId) {
+        String planJson = "";
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query("RoomPlan",
+                new String[]{"PlanJson"},
+                "ProjectId = ?",
+                new String[] {Integer.toString(projectId)},
+                null, null, null);
+
+        if (cursor.moveToFirst()) {
+            planJson = cursor.getString(0);
+        }
+
+        cursor.close();
+
+        return planJson;
     }
 }

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -25,13 +26,14 @@ public class StartActivity extends AppCompatActivity {
     private Cursor cursor;
     private List<Project> projects;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        //this.deleteDatabase("InteriorDesigner");
         databaseHelper = new DatabaseHelper(this);
         projects = GetProjects();
+
 
         RecyclerView projectsRecycler = findViewById(R.id.recyclerProjectsView);
         ProjectCardAdapter adapter = new ProjectCardAdapter(projects);

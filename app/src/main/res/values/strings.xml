@@ -9,6 +9,9 @@
     <string name="btn_newProject">New project</string>
     <string name="title_newProject">New Project</string>
 
+    <string name="btnNewRoomPlan">New room plan</string>
+    <string name="btnEditRoomPlan">Edit room plan</string>
+
     <string name="allCategory">All categories</string>
 
     <string name="projectName">Project name</string>
@@ -16,9 +19,12 @@
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="back">Back</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
 
     <string name="backToMenu">Back to menu</string>
-
     <string name="DB_notAvailable">Database is not available</string>
+
+
 
 </resources>

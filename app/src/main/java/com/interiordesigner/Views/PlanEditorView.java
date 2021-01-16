@@ -5,32 +5,21 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.OverScroller;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.GestureDetectorCompat;
-import androidx.core.view.MotionEventCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.widget.EdgeEffectCompat;
 
-import com.interiordesigner.Classes.PlanPoint;
+import com.interiordesigner.Classes.Point;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlanEditorView extends View {
-    private static final int SQUARE_SIZE = 100;
-    private static final int CIRCLE_RADIUS = 50;
+    public static final int CIRCLE_RADIUS = 50;
 
     private int bitmapHeight = 1000;
     private int bitmapWidth = 1000;
@@ -40,17 +29,16 @@ public class PlanEditorView extends View {
     private Bitmap bitmap;
     private Canvas myCanvas;
 
-    private Button btnDelete;
 
     int scrollPosX = 0;
     int scrollPosY = 0;
 
     float touchX, touchY;
-    boolean planIsComplite;
     boolean movePoint;
 
-    public List<PlanPoint> points;
-    public PlanPoint selectedPoint;
+    public boolean planIsComplete;
+    public List<Point> points;
+    public Point selectedPoint;
 
     public PlanEditorView(Context context) {
         super(context);
@@ -74,8 +62,8 @@ public class PlanEditorView extends View {
     }
 
     private void init(@Nullable AttributeSet set) {
-        points = new ArrayList<PlanPoint>();
-        planIsComplite = false;
+
+        planIsComplete = false;
 
         bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         myCanvas = new Canvas(bitmap);
@@ -84,13 +72,9 @@ public class PlanEditorView extends View {
         detector = new GestureDetectorCompat( getContext(), gestureListener);
         detector.setOnDoubleTapListener(gestureListener);
 
-        points.add(new PlanPoint(150, 150, CIRCLE_RADIUS));
-        points.add(new PlanPoint(500, 150, CIRCLE_RADIUS));
-        selectedPoint = points.get(1);
+        //selectedPoint = points.get(1);
 
         movePoint = false;
-        //btnDelete = new Button();
-
     }
 
     @Override
@@ -141,7 +125,7 @@ public class PlanEditorView extends View {
 
             canvas.drawCircle(points.get(i).getX(),
                     points.get(i).getY(),
-                    points.get(i).getRadius(),
+                    CIRCLE_RADIUS,
                     paint);
 
             if (i != 0) {
@@ -155,7 +139,7 @@ public class PlanEditorView extends View {
             }
         }
 
-        if (planIsComplite) {
+        if (planIsComplete) {
             paint.setColor(Color.BLACK);
             paint.setStrokeWidth(10);
             canvas.drawLine(points.get(0).getX(),
@@ -193,9 +177,9 @@ public class PlanEditorView extends View {
 
             if (selectedPointIndex <= 0 && selectedPoint == points.get(points.size()-1) ) {
                 if (selectedPointIndex == 0 && points.size() >= 3) {
-                    planIsComplite = true;
-                } else if (!planIsComplite) {
-                    PlanPoint point = new PlanPoint(x, y, CIRCLE_RADIUS);
+                    planIsComplete = true;
+                } else if (!planIsComplete) {
+                    Point point = new Point(x, y, CIRCLE_RADIUS);
                     points.add(point);
                     selectedPoint = point;
                 }
@@ -257,7 +241,7 @@ public class PlanEditorView extends View {
             int y = (int) event.getY() + scrollPosY;
 
             for (int i = 0; i < points.size(); i++) {
-                PlanPoint point = points.get(i);
+                Point point = points.get(i);
                 double dx = Math.pow(x - point.getX(), 2);
                 double dy = Math.pow(y - point.getY(), 2);
 
