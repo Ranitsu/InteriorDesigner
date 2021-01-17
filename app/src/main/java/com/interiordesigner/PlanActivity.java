@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -40,11 +41,10 @@ public class PlanActivity extends AppCompatActivity {
             planEditor.roomPlan = roomPlan;
         } else {
             List<Point> points = new ArrayList<Point>();
-            points.add(new Point(500, 150, PlanEditorView.CIRCLE_RADIUS));
             points.add(new Point(150, 150, PlanEditorView.CIRCLE_RADIUS));
+            points.add(new Point(500, 150, PlanEditorView.CIRCLE_RADIUS));
 
             roomPlan = new RoomPlan(projectId, points, false);
-
             planEditor.roomPlan = roomPlan;
         }
     }
@@ -55,13 +55,12 @@ public class PlanActivity extends AppCompatActivity {
         getDelegate().onStart();
     }
 
-
     public void onClickDelete(View view) {
         Point point = planEditor.selectedPoint;
-        List<Point> points = planEditor.points;
+        List<Point> points = roomPlan.getPoints();
 
         points.remove(point);
-        planEditor.selectedPoint = points.get(points.size()-1);
+        planEditor.selectedPoint = null;
         planEditor.postInvalidate();
     }
 
@@ -77,11 +76,24 @@ public class PlanActivity extends AppCompatActivity {
 //                });
 //        alertDialog.show();
 
-        if (roomPlan.getId() > 0) {
-            databaseHelper.UpdateRoomPlan(db, roomPlan);
-        } else {
-            databaseHelper.AddRoomPlan(db, roomPlan);
+        String toastText;
+        try {
+            if (roomPlan.getId() > 0) {
+                databaseHelper.UpdateRoomPlan(db, roomPlan);
+                toastText = "Room plan updated";
+
+            } else {
+                databaseHelper.AddRoomPlan(db, roomPlan);
+                RoomPlan savedRoomPlan = databaseHelper.GetRoomPlanByProjectId(projectId);
+                roomPlan.SetId(savedRoomPlan.getId());
+                toastText = "Room plan saved";
+            }
+        } catch(Exception exception) {
+            toastText = "Error";
         }
+
+        Toast toast = Toast.makeText(this, toastText, Toast.LENGTH_LONG);
+        toast.show();
     }
 
 

@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             btnRoomPlan.setText(getResources().getString(R.string.btnEditRoomPlan));
             imgRoomPlan.roomPlan = roomPlan;
+            imgRoomPlan.postInvalidate();
         }
     }
 

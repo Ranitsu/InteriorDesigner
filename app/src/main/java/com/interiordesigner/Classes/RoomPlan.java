@@ -33,6 +33,7 @@ public class RoomPlan {
         return json;
     }
 
+    public void SetId(int id) { this.id = id; }
     public void SetComplete(boolean value) {
         isComplete = value;
     }

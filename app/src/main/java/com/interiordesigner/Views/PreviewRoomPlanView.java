@@ -45,21 +45,33 @@ public class PreviewRoomPlanView extends View {
         super.onDraw(canvas);
 
         if (roomPlan != null) {
-            List<Point> points = roomPlan.getPoints();
+            DrawPoints(canvas);
+        }
+    }
 
-            Paint paint = new Paint();
-            paint.setColor(Color.BLACK);
-            paint.setStrokeWidth(5f);
+    private void DrawPoints(Canvas canvas)
+    {
+        List<Point> points = roomPlan.getPoints();
+        int pointsSize = points.size();
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(10);
 
-            int width = this.getMeasuredWidth();
-            int height = this.getMeasuredHeight();
-
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            Canvas myCanvas = new Canvas(bitmap);
-
-            canvas.drawLine(points.get(0).getX(), points.get(0).getY(), points.get(1).getX(), points.get(1).getY(), paint);
-            canvas.drawLine(points.get(1).getX(), points.get(1).getY(), points.get(2).getX(), points.get(2).getY(), paint);
+        for (int i = 1; i < pointsSize; i++) {
+            canvas.drawLine(points.get(i-1).getX(),
+                            points.get(i-1).getY(),
+                            points.get(i).getX(),
+                            points.get(i).getY(),
+                            paint);
         }
 
+        if (roomPlan.IsComplete()) {
+            canvas.drawLine(points.get(0).getX(),
+                    points.get(0).getY(),
+                    points.get(pointsSize-1).getX(),
+                    points.get(pointsSize-1).getY(),
+                    paint);
+        }
     }
+
 }

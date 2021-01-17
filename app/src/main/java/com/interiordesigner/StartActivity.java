@@ -30,7 +30,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        //this.deleteDatabase("InteriorDesigner");
+        this.deleteDatabase("InteriorDesigner");
         databaseHelper = new DatabaseHelper(this);
         projects = GetProjects();
 
