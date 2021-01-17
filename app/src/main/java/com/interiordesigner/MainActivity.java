@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.interiordesigner.Classes.Point;
 import com.interiordesigner.Classes.Project;
+import com.interiordesigner.Classes.RoomPlan;
 import com.interiordesigner.Views.PreviewRoomPlanView;
 
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
     int projectId;
 
+    DatabaseHelper databaseHelper;
+
+    Project project;
+    RoomPlan roomPlan;
+
     Button btnRoomPlan;
     PreviewRoomPlanView imgRoomPlan;
 
@@ -43,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         projectId = (Integer) getIntent().getExtras().get(EXTRA_PROJECT_ID);
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        databaseHelper = new DatabaseHelper(this);
 
-        Project project = databaseHelper.GetProject(projectId);
+        project = databaseHelper.GetProject(projectId);
 
         TextView projectName = findViewById(R.id.projectNameTxt);
         TextView projectDescription = findViewById(R.id.descriptionTxt);
@@ -53,19 +59,22 @@ public class MainActivity extends AppCompatActivity {
         projectName.setText(project.GetName());
         projectDescription.setText(project.GetDescription());
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        roomPlan = databaseHelper.GetRoomPlanByProjectId(projectId);
         btnRoomPlan = findViewById(R.id.btnRoomPlan);
         imgRoomPlan = findViewById(R.id.imgRoomPlan);
 
-        String json = databaseHelper.GetPlanJson(projectId);
-        if (json == null || json.isEmpty()) {
+        if (roomPlan == null) {
             btnRoomPlan.setText(getResources().getString(R.string.btnNewRoomPlan));
-
         } else {
             btnRoomPlan.setText(getResources().getString(R.string.btnEditRoomPlan));
-            List<Point> points = new Gson().fromJson(json, new TypeToken<ArrayList<Point>>() {}.getType());
-            imgRoomPlan.points = points;
+            imgRoomPlan.roomPlan = roomPlan;
         }
-
     }
 
     public void onClickBackToMenu(View view) {

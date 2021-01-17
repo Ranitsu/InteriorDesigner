@@ -9,6 +9,7 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.interiordesigner.Classes.Point;
+import com.interiordesigner.Classes.RoomPlan;
 import com.interiordesigner.Views.PlanEditorView;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class PlanActivity extends AppCompatActivity {
     private PlanEditorView planEditor;
 
     int projectId;
+    RoomPlan roomPlan;
     DatabaseHelper databaseHelper;
     SQLiteDatabase db;
 
@@ -32,15 +34,18 @@ public class PlanActivity extends AppCompatActivity {
         projectId = (Integer) getIntent().getExtras().get(MainActivity.EXTRA_PROJECT_ID);
         planEditor = findViewById(R.id.planEditorView);
 
-        String json = databaseHelper.GetPlanJson(projectId);
-        List<Point> result = new Gson().fromJson(json, new TypeToken<ArrayList<Point>>() {}.getType());
+        roomPlan = databaseHelper.GetRoomPlanByProjectId(projectId);
 
-        if (result != null)
-            planEditor.points = result;
-        else {
-            planEditor.points = new ArrayList<Point>();
-            planEditor.points.add(new Point(150, 150, PlanEditorView.CIRCLE_RADIUS));
-            planEditor.points.add(new Point(500, 150, PlanEditorView.CIRCLE_RADIUS));
+        if (roomPlan != null) {
+            planEditor.roomPlan = roomPlan;
+        } else {
+            List<Point> points = new ArrayList<Point>();
+            points.add(new Point(500, 150, PlanEditorView.CIRCLE_RADIUS));
+            points.add(new Point(150, 150, PlanEditorView.CIRCLE_RADIUS));
+
+            roomPlan = new RoomPlan(projectId, points, false);
+
+            planEditor.roomPlan = roomPlan;
         }
     }
 
@@ -61,9 +66,6 @@ public class PlanActivity extends AppCompatActivity {
     }
 
     public void onClickSave(View view) {
-        boolean isComplite = planEditor.planIsComplete;
-        List<Point> points = planEditor.points;
-
 //        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 //        alertDialog.setTitle("Alert");
 //        alertDialog.setMessage("Alert message to be shown");
@@ -75,12 +77,11 @@ public class PlanActivity extends AppCompatActivity {
 //                });
 //        alertDialog.show();
 
-
-
-        String plantAsString = points.toString();
-        String json = new Gson().toJson(points);
-
-        databaseHelper.AddRoomPlan(db, projectId, json);
+        if (roomPlan.getId() > 0) {
+            databaseHelper.UpdateRoomPlan(db, roomPlan);
+        } else {
+            databaseHelper.AddRoomPlan(db, roomPlan);
+        }
     }
 
 

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.GestureDetectorCompat;
 
 import com.interiordesigner.Classes.Point;
+import com.interiordesigner.Classes.RoomPlan;
 
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class PlanEditorView extends View {
 
     float touchX, touchY;
     boolean movePoint;
+
+    public RoomPlan roomPlan;
 
     public boolean planIsComplete;
     public List<Point> points;
@@ -62,9 +65,6 @@ public class PlanEditorView extends View {
     }
 
     private void init(@Nullable AttributeSet set) {
-
-        planIsComplete = false;
-
         bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         myCanvas = new Canvas(bitmap);
 
@@ -115,37 +115,37 @@ public class PlanEditorView extends View {
     {
         Paint paint = new Paint();
 
-        for (int i = 0; i < points.size(); i++) {
+        for (int i = 0; i < roomPlan.getPoints().size(); i++) {
             if (i == 0)
                 paint.setColor(Color.GREEN);
-            else if (points.get(i) == selectedPoint)
+            else if (roomPlan.getPoints().get(i) == selectedPoint)
                 paint.setColor(Color.RED);
             else
                 paint.setColor(Color.BLACK);
 
-            canvas.drawCircle(points.get(i).getX(),
-                    points.get(i).getY(),
+            canvas.drawCircle(roomPlan.getPoints().get(i).getX(),
+                    roomPlan.getPoints().get(i).getY(),
                     CIRCLE_RADIUS,
                     paint);
 
             if (i != 0) {
                 paint.setColor(Color.BLACK);
                 paint.setStrokeWidth(10);
-                canvas.drawLine(points.get(i-1).getX(),
-                                points.get(i-1).getY(),
-                                points.get(i).getX(),
-                                points.get(i).getY(),
+                canvas.drawLine(roomPlan.getPoints().get(i-1).getX(),
+                                roomPlan.getPoints().get(i-1).getY(),
+                                roomPlan.getPoints().get(i).getX(),
+                                roomPlan.getPoints().get(i).getY(),
                                 paint);
             }
         }
 
-        if (planIsComplete) {
+        if (roomPlan.IsComplete()) {
             paint.setColor(Color.BLACK);
             paint.setStrokeWidth(10);
-            canvas.drawLine(points.get(0).getX(),
-                            points.get(0).getY(),
-                            points.get(points.size()-1).getX(),
-                            points.get(points.size()-1).getY(),
+            canvas.drawLine(roomPlan.getPoints().get(0).getX(),
+                            roomPlan.getPoints().get(0).getY(),
+                            roomPlan.getPoints().get(roomPlan.getPoints().size()-1).getX(),
+                            roomPlan.getPoints().get(roomPlan.getPoints().size()-1).getY(),
                             paint);
         }
 
@@ -175,18 +175,18 @@ public class PlanEditorView extends View {
 
             int selectedPointIndex = SelectPoint(event);
 
-            if (selectedPointIndex <= 0 && selectedPoint == points.get(points.size()-1) ) {
-                if (selectedPointIndex == 0 && points.size() >= 3) {
-                    planIsComplete = true;
-                } else if (!planIsComplete) {
+            if (selectedPointIndex <= 0 && selectedPoint == roomPlan.getPoints().get(roomPlan.getPoints().size()-1) ) {
+                if (selectedPointIndex == 0 && roomPlan.getPoints().size() >= 3) {
+                    roomPlan.SetComplete(true);
+                } else if (!roomPlan.IsComplete()) {
                     Point point = new Point(x, y, CIRCLE_RADIUS);
-                    points.add(point);
+                    roomPlan.getPoints().add(point);
                     selectedPoint = point;
                 }
             }
 
             if (selectedPointIndex > -1)
-                selectedPoint = points.get(selectedPointIndex);
+                selectedPoint = roomPlan.getPoints().get(selectedPointIndex);
 
             return true;
         }
@@ -240,8 +240,8 @@ public class PlanEditorView extends View {
             int x = (int) event.getX() + scrollPosX;
             int y = (int) event.getY() + scrollPosY;
 
-            for (int i = 0; i < points.size(); i++) {
-                Point point = points.get(i);
+            for (int i = 0; i < roomPlan.getPoints().size(); i++) {
+                Point point = roomPlan.getPoints().get(i);
                 double dx = Math.pow(x - point.getX(), 2);
                 double dy = Math.pow(y - point.getY(), 2);
 

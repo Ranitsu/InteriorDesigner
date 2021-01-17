@@ -11,11 +11,12 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.interiordesigner.Classes.Point;
+import com.interiordesigner.Classes.RoomPlan;
 
 import java.util.List;
 
 public class PreviewRoomPlanView extends View {
-    public List<Point> points;
+    public RoomPlan roomPlan;
 
 
     public PreviewRoomPlanView(Context context) {
@@ -43,17 +44,22 @@ public class PreviewRoomPlanView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(5f);
+        if (roomPlan != null) {
+            List<Point> points = roomPlan.getPoints();
 
-        int width = this.getMeasuredWidth();
-        int height = this.getMeasuredHeight();
+            Paint paint = new Paint();
+            paint.setColor(Color.BLACK);
+            paint.setStrokeWidth(5f);
 
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas myCanvas = new Canvas(bitmap);
+            int width = this.getMeasuredWidth();
+            int height = this.getMeasuredHeight();
 
-        canvas.drawLine(points.get(0).getX(), points.get(0).getY(), points.get(1).getX(), points.get(1).getY(), paint);
-        canvas.drawLine(points.get(1).getX(), points.get(1).getY(), points.get(2).getX(), points.get(2).getY(), paint);
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas myCanvas = new Canvas(bitmap);
+
+            canvas.drawLine(points.get(0).getX(), points.get(0).getY(), points.get(1).getX(), points.get(1).getY(), paint);
+            canvas.drawLine(points.get(1).getX(), points.get(1).getY(), points.get(2).getX(), points.get(2).getY(), paint);
+        }
+
     }
 }

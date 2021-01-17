@@ -11,9 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.interiordesigner.Classes.Category;
 import com.interiordesigner.Classes.Furniture;
+import com.interiordesigner.Classes.Point;
 import com.interiordesigner.Classes.Project;
+import com.interiordesigner.Classes.RoomPlan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,36 +107,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "CREATE TABLE RoomPlan (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "ProjectId INTEGER," +
-                "PlanJson TEXT" +
+                "PlanJson TEXT," +
+                "IsComplete INTEGER" +
                 ")";
 
         db.execSQL(query);
     }
 
-    public void AddRoomPlan(SQLiteDatabase db, int projectId, String json) {
+    public void AddRoomPlan(SQLiteDatabase db, RoomPlan roomPlan) {
         ContentValues roomPlanValues = new ContentValues();
-        roomPlanValues.put("ProjectId", projectId);
-        roomPlanValues.put("PlanJson", json);
+        roomPlanValues.put("ProjectId", roomPlan.getProjectId());
+        roomPlanValues.put("PlanJson", roomPlan.getPlanJson());
+        roomPlanValues.put("IsComplete", roomPlan.IsComplete());
 
         db.insert(ROOM_PLAN, null, roomPlanValues);
     }
 
-    public String GetPlanJson(int projectId) {
-        String planJson = "";
+    public void UpdateRoomPlan(SQLiteDatabase db, RoomPlan roomPlan) {
+        ContentValues roomPlanValues = new ContentValues();
+        roomPlanValues.put("ProjectId", roomPlan.getId());
+        roomPlanValues.put("PlanJson", roomPlan.getPlanJson());
+        roomPlanValues.put("IsComplete", roomPlan.IsComplete());
 
+        db.update(ROOM_PLAN, roomPlanValues, "_id = ?", new String[] { String.valueOf(roomPlan.getId()) } );
+    }
+
+    public RoomPlan GetRoomPlanByProjectId(int projectId) {
+        RoomPlan roomPlan;
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query("RoomPlan",
-                new String[]{"PlanJson"},
+
+        Cursor cursor = db.query(ROOM_PLAN,
+                new String[]{"_id", "ProjectId", "PlanJson", "IsComplete"},
                 "ProjectId = ?",
                 new String[] {Integer.toString(projectId)},
                 null, null, null);
 
         if (cursor.moveToFirst()) {
-            planJson = cursor.getString(0);
+            int id = cursor.getInt(0);
+            int projId = cursor.getInt(1);
+            String planJson = cursor.getString(2);
+            int complete = cursor.getInt(3);
+
+            List<Point> points = new Gson().fromJson(planJson, new TypeToken<ArrayList<Point>>(){}.getType());
+            boolean isComplete = (complete == 1);
+
+            roomPlan = new RoomPlan(id, projId, points, isComplete);
+        } else {
+            roomPlan = null;
         }
 
         cursor.close();
 
-        return planJson;
+        return roomPlan;
     }
+
 }
