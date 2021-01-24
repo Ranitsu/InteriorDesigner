@@ -14,6 +14,7 @@ public class Project {
     private String description;
     private LocalDate createDate;
     private LocalDate editDate;
+    private RoomPlan roomPlan;
     private int thumbnailId;
 
     public Project () { }
@@ -53,12 +54,26 @@ public class Project {
         }
     }
 
+    public Project(int id, String name, String description, String createDate, int thumbnailId, RoomPlan roomPlan) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.createDate = LocalDate.parse(createDate);
+        if (thumbnailId == 0)
+            this.thumbnailId = R.drawable.thumbnail;
+        else {
+            this.thumbnailId = thumbnailId;
+        }
+        this.roomPlan = roomPlan;
+    }
+
     public int GetId() { return this.id; }
     public String GetName() { return this.name; }
     public String GetDescription() { return this.description; }
     public int GetThumbnailId(){
         return this.thumbnailId;
     }
+    public RoomPlan GetRoomPlan() { return this.roomPlan; }
 
     public LocalDate GetCreateDate() { return this.createDate; }
     public LocalDate GetEditDate() { return this.editDate; }

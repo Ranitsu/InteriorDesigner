@@ -1,5 +1,6 @@
 package com.interiordesigner;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,8 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String PROJECT = "Project";
     private static final String ROOM_PLAN = "RoomPlan";
 
+    private Context context;
+
     DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -74,6 +78,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         projectValues.put("CreateDate", project.GetCreateDate().toString());
 
         db.insert(PROJECT, null, projectValues);
+    }
+
+    public List<Project> GetProjects() {
+        List<com.interiordesigner.Classes.Project> projects = new ArrayList<>();
+
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+//            Cursor cursor = db.query(PROJECT, new String[] {"_id",  "Name", "Description", "CreateDate", "ThumbnailId"},
+//                    null, null, null, null, null);
+
+            Cursor cursor = db.rawQuery("SELECT * FROM " + PROJECT + " LEFT JOIN " + ROOM_PLAN + " ON " + PROJECT + "._id = " + ROOM_PLAN + ".ProjectId", new String[]{});
+
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    Project project;
+                    RoomPlan roomPlan = null;
+
+                    int id = cursor.getInt(0);
+                    String name = cursor.getString(1);
+                    String description = cursor.getString(2);
+                    String createDate = cursor.getString(3);
+                    String editDate = cursor.getString(4);
+                    int thumbnailId = cursor.getInt(5);
+
+                    int roomPlanId = cursor.getInt(6);
+                    String roomPlanJson = cursor.getString(8);
+                    int roomPlanIsComplete = cursor.getInt(9);
+
+                    if (roomPlanId != 0) {
+                        List<Point> points = RoomPlan.getPointsFromJson(roomPlanJson);
+                        roomPlan = new RoomPlan(roomPlanId, id, points, roomPlanIsComplete == 1);
+                    }
+
+                    project = new Project(id, name, description, createDate, thumbnailId, roomPlan);
+                    projects.add(project);
+
+                    cursor.moveToNext();
+                }
+            }
+        } catch (SQLiteException ex) {
+            Toast toast = Toast.makeText(context, R.string.DB_notAvailable, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+        return projects;
     }
 
     public Project GetProject(int projectId) {
@@ -147,7 +196,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String planJson = cursor.getString(2);
             int complete = cursor.getInt(3);
 
-            List<Point> points = new Gson().fromJson(planJson, new TypeToken<ArrayList<Point>>(){}.getType());
+            List<Point> points = RoomPlan.getPointsFromJson(planJson);
             boolean isComplete = (complete == 1);
 
             roomPlan = new RoomPlan(id, projId, points, isComplete);

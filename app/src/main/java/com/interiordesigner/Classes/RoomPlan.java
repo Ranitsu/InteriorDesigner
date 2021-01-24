@@ -1,7 +1,9 @@
 package com.interiordesigner.Classes;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RoomPlan {
@@ -16,9 +18,9 @@ public class RoomPlan {
         this.isComplete = isComplete;
     }
 
-    public RoomPlan(int id, int projId, List<Point> points, boolean isComplete) {
+    public RoomPlan(int id, int projectId, List<Point> points, boolean isComplete) {
         this.id = id;
-        this.projectId = projId;
+        this.projectId = projectId;
         this.points = points;
         this.isComplete = isComplete;
     }
@@ -32,6 +34,13 @@ public class RoomPlan {
         String json = new Gson().toJson(points);
         return json;
     }
+
+    static public List<Point> getPointsFromJson(String json) {
+        List<Point> points = new Gson().fromJson(json, new TypeToken<ArrayList<Point>>(){}.getType());
+
+        return points;
+    }
+
 
     public void SetId(int id) { this.id = id; }
     public void SetComplete(boolean value) {

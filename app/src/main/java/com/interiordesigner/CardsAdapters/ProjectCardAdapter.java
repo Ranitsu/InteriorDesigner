@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.interiordesigner.Classes.Project;
 import com.interiordesigner.R;
+import com.interiordesigner.Views.PreviewRoomPlanView;
 
 import java.util.List;
 
@@ -40,11 +41,14 @@ public class ProjectCardAdapter extends RecyclerView.Adapter<ProjectCardAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         CardView cardView = holder.cardView;
-        ImageView imageView = (ImageView) cardView.findViewById(R.id.project_image);
+        //ImageView imageView = (ImageView) cardView.findViewById(R.id.project_image);
+        PreviewRoomPlanView previewRoomPlanView = (PreviewRoomPlanView) cardView.findViewById(R.id.imgRoomPlan);
         TextView textView = (TextView) cardView.findViewById(R.id.project_name);
-        Drawable drawable = ContextCompat.getDrawable(cardView.getContext(), projects.get(position).GetThumbnailId());
+        //Drawable drawable = ContextCompat.getDrawable(cardView.getContext(), projects.get(position).GetThumbnailId());
 
-        imageView.setImageDrawable(drawable);
+        //imageView.setImageDrawable(drawable);
+        previewRoomPlanView.roomPlan = projects.get(position).GetRoomPlan();
+        previewRoomPlanView.postInvalidate();
         textView.setText(projects.get(position).GetName());
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
