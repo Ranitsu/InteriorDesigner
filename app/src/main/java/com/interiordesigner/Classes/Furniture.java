@@ -8,6 +8,7 @@ public class Furniture {
     private int categoryId;
     private int photoId;
     private int[] colorsIds;
+    private String photoPath;
     private String modelPath;
     private String[] modelsPaths;
     private float modelRadius;
@@ -18,6 +19,7 @@ public class Furniture {
         this.categoryId = categoryId;
         this.photoId = R.drawable.thumbnail;
         this.colorsIds = colorsIds;
+        this.photoPath = "images/simple_table.png";
         this.modelPath = "models/cube.glb";
         this.modelRadius = 0.5f;
     }
@@ -42,7 +44,7 @@ public class Furniture {
         this.modelRadius = modelRadius;
     }
 
-    public Furniture(int id, String name, int categoryId, int[] colorsIds, String[] modelsPaths, float modelRadius) {
+    public Furniture(int id, String name, int categoryId, int[] colorsIds, String[] modelsPaths, float modelRadius, String imagePath) {
         this.id = id;
         this.name = name;
         this.categoryId = categoryId;
@@ -50,6 +52,7 @@ public class Furniture {
         this.colorsIds = colorsIds;
         this.modelsPaths = modelsPaths;
         this.modelRadius = modelRadius;
+        this.photoPath = imagePath;
     }
 
     public int GetId() { return id; }
@@ -60,9 +63,16 @@ public class Furniture {
     public String GetModelPath() { return modelPath; }
     public String[] GetModelsPaths() { return modelsPaths; }
     public float GetModelRadius() { return modelRadius; }
+    public String GetPhotoPath() { return photoPath; }
 
     public static Furniture[] Furnitures = new Furniture[] {
-        new Furniture(1, "Simple Table", 2, new int[] {4, 5}, new String[]{"models/simple_table/simple_table.glb", "models/simple_table/simple_table_v2.glb"}, 3)
+        new Furniture( 1, "Simple Table", 2, new int[] {4, 5},
+                new String[]{
+                        "models/simple_table/simple_table.glb",
+                        "models/simple_table/simple_table_v2.glb"
+                },
+                3, "images/simple_table.png"
+                )
     };
 
     public static Furniture GetById(int id) {

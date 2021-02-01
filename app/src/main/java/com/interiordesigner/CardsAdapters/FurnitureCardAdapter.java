@@ -1,7 +1,9 @@
 package com.interiordesigner.CardsAdapters;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.interiordesigner.Classes.Color;
 import com.interiordesigner.Classes.Furniture;
 import com.interiordesigner.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.stream.IntStream;
 public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdapter.ViewHolder> {
     private Furniture[] furnitures;
     private Listener listener;
+    private Context context;
 
 
     public FurnitureCardAdapter(Furniture[] furnitures) { this.furnitures = furnitures; }
@@ -40,6 +44,8 @@ public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdap
         CardView cv = (CardView) LayoutInflater.from(parent.getContext())
                                                .inflate(R.layout.furniture_card, parent,
                                                     false);
+        context = parent.getContext();
+
         return new ViewHolder(cv);
     }
 
@@ -53,10 +59,20 @@ public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdap
         TextView textView = cardView.findViewById(R.id.furnitureName);
         LinearLayout layout = cardView.findViewById(R.id.furnitureColorsLayout);
 
-        Drawable drawable = ContextCompat.getDrawable(cardView.getContext(),
-                                                      furniture.GetPhotoId());
+//        Drawable drawable = ContextCompat.getDrawable(cardView.getContext(),
+//                                                      furniture.GetPhotoId());
+
+        String path = furniture.GetPhotoPath();
+
+        Drawable drawable = null;
+        try {
+            drawable = Drawable.createFromStream(context.getAssets().open(path), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         imageView.setImageDrawable(drawable);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         textView.setText(furniture.GetName());
 
         int[] availableColorsIds = furniture.GetColorsIds();
@@ -79,6 +95,8 @@ public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdap
             shape.setSize(100, 100);
 
             iv.setImageDrawable(shape);
+            iv.setElevation(8);
+            iv.setPadding(10, 0,10,0);
             //iv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
             //                                            ViewGroup.LayoutParams.WRAP_CONTENT));
 

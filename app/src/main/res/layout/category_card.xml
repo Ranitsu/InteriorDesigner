@@ -7,8 +7,8 @@
     android:layout_margin="4dp"
     android:background="@color/CategoryLvl1"
     android:orientation="vertical"
-    card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="4dp"
+    card_view:cardCornerRadius="16dp"
+    card_view:cardElevation="8dp"
     card_view:cardUseCompatPadding="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
