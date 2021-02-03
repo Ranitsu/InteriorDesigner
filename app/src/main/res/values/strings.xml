@@ -6,11 +6,14 @@
     <string name="furniture_catalog_title">Furniture catalog</string>
     <string name="furnitureImage">Furniture image</string>
 
-    <string name="btn_newProject">New project</string>
+    <string name="btnNewProject">New project</string>
     <string name="title_newProject">New Project</string>
 
     <string name="btnNewRoomPlan">New room plan</string>
     <string name="btnEditRoomPlan">Edit room plan</string>
+    <string name="btnAddFurnitures">Add furnitures</string>
+    <string name="btnEditFurnitures">Edit furnitures</string>
+
 
     <string name="allCategory">All categories</string>
 
@@ -24,7 +27,6 @@
 
     <string name="backToMenu">Back to menu</string>
     <string name="DB_notAvailable">Database is not available</string>
-
 
 
 </resources>

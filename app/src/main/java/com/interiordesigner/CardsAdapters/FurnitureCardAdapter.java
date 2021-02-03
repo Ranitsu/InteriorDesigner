@@ -3,11 +3,9 @@ package com.interiordesigner.CardsAdapters;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,9 +20,7 @@ import com.interiordesigner.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdapter.ViewHolder> {
     private Furniture[] furnitures;
@@ -62,7 +58,7 @@ public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdap
 //        Drawable drawable = ContextCompat.getDrawable(cardView.getContext(),
 //                                                      furniture.GetPhotoId());
 
-        String path = furniture.GetPhotoPath();
+        String path = furniture.getPhotoPath();
 
         Drawable drawable = null;
         try {
@@ -73,9 +69,9 @@ public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdap
 
         imageView.setImageDrawable(drawable);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        textView.setText(furniture.GetName());
+        textView.setText(furniture.getName());
 
-        int[] availableColorsIds = furniture.GetColorsIds();
+        int[] availableColorsIds = furniture.getColorsIds();
         for (Color color : Color.Colors)
         {
             for (int availableColorId : availableColorsIds)
@@ -107,7 +103,7 @@ public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdap
             @Override
             public void onClick(View v) {
                 if (listener != null)
-                    listener.onClick(furniture.GetId());
+                    listener.onClick(furniture.getId());
             }
         });
     }

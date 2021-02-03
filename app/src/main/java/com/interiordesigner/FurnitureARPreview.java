@@ -53,7 +53,7 @@ public class FurnitureARPreview extends AppCompatActivity {
         // When you build a Renderable, Sceneform loads its resources in the background while returning
         // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
         ModelRenderable.builder()
-                .setSource(this, Uri.parse(furniture.GetModelPath()))
+                .setSource(this, Uri.parse(furniture.getModelPath()))
                 .setIsFilamentGltf(true)
                 .build()
                 .thenAccept(renderable -> modelRenderable = renderable)

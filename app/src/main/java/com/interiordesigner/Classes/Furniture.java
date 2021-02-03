@@ -12,39 +12,9 @@ public class Furniture {
     private String modelPath;
     private String[] modelsPaths;
     private float modelRadius;
+    private Dimensions3D dimensions;
 
-    public Furniture(int id, String name, int categoryId, int[] colorsIds) {
-        this.id = id;
-        this.name = name;
-        this.categoryId = categoryId;
-        this.photoId = R.drawable.thumbnail;
-        this.colorsIds = colorsIds;
-        this.photoPath = "images/simple_table.png";
-        this.modelPath = "models/cube.glb";
-        this.modelRadius = 0.5f;
-    }
-
-    public Furniture(int id, String name, int categoryId, int[] colorsIds, String modelPath) {
-        this.id = id;
-        this.name = name;
-        this.categoryId = categoryId;
-        this.photoId = R.drawable.thumbnail;
-        this.colorsIds = colorsIds;
-        this.modelPath = modelPath;
-        this.modelRadius = 0.5f;
-    }
-
-    public Furniture(int id, String name, int categoryId, int[] colorsIds, String modelPath, float modelRadius) {
-        this.id = id;
-        this.name = name;
-        this.categoryId = categoryId;
-        this.photoId = R.drawable.thumbnail;
-        this.colorsIds = colorsIds;
-        this.modelPath = modelPath;
-        this.modelRadius = modelRadius;
-    }
-
-    public Furniture(int id, String name, int categoryId, int[] colorsIds, String[] modelsPaths, float modelRadius, String imagePath) {
+    public Furniture(int id, String name, int categoryId, int[] colorsIds, String[] modelsPaths, float modelRadius, String imagePath, Dimensions3D dimensions) {
         this.id = id;
         this.name = name;
         this.categoryId = categoryId;
@@ -53,17 +23,20 @@ public class Furniture {
         this.modelsPaths = modelsPaths;
         this.modelRadius = modelRadius;
         this.photoPath = imagePath;
+        this.dimensions = dimensions;
     }
 
-    public int GetId() { return id; }
-    public String GetName() { return name; }
-    public int GetCategoryId() { return categoryId; }
-    public int GetPhotoId() { return photoId; }
-    public int[] GetColorsIds() { return colorsIds; }
-    public String GetModelPath() { return modelPath; }
-    public String[] GetModelsPaths() { return modelsPaths; }
-    public float GetModelRadius() { return modelRadius; }
-    public String GetPhotoPath() { return photoPath; }
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public int getCategoryId() { return categoryId; }
+    public int getPhotoId() { return photoId; }
+    public int[] getColorsIds() { return colorsIds; }
+    public String getModelPath() { return modelPath; }
+    public String[] getModelsPaths() { return modelsPaths; }
+    public float getModelRadius() { return modelRadius; }
+    public String getPhotoPath() { return photoPath; }
+    public Dimensions2D getDimensions2D() { return dimensions; }
+    public Dimensions3D getDimensions3D() { return dimensions; }
 
     public static Furniture[] Furnitures = new Furniture[] {
         new Furniture( 1, "Simple Table", 2, new int[] {4, 5},
@@ -71,8 +44,9 @@ public class Furniture {
                         "models/simple_table/simple_table.glb",
                         "models/simple_table/simple_table_v2.glb"
                 },
-                3, "images/simple_table.png"
-                )
+                3, "images/simple_table.png",
+                 new Dimensions3D(0.5, 0.5, 0.5)
+            )
     };
 
     public static Furniture GetById(int id) {

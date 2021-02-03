@@ -49,16 +49,16 @@ public class FurnitureDetails extends AppCompatActivity {
         furniture = Furniture.GetById(furnitureId);
 
         setContentView(R.layout.activity_furniture_details);
-        sceneView = (SceneView) findViewById(R.id.objectPreview);
+        sceneView = findViewById(R.id.objectPreview);
 
         TextView titleText = findViewById(R.id.textTitle);
-        titleText.setText(furniture.GetName());
+        titleText.setText(furniture.getName());
 
         Button btnReset = findViewById(R.id.btnReset);
         Button btnAR = findViewById(R.id.btnAR);
 
 
-        int[] furnitureColors = furniture.GetColorsIds();
+        int[] furnitureColors = furniture.getColorsIds();
 
         RadioGroup radioGroup = findViewById(R.id.colorsRadiosGroup);
         radioGroup.setOrientation(RadioGroup.VERTICAL);
@@ -75,7 +75,7 @@ public class FurnitureDetails extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-                modelPath = furniture.GetModelsPaths()[checkedRadioButtonId];
+                modelPath = furniture.getModelsPaths()[checkedRadioButtonId];
                 createModel(modelPath);
             }
         });
@@ -92,13 +92,13 @@ public class FurnitureDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FurnitureDetails.this, FurnitureARPreview.class);
-                intent.putExtra(FurnitureARPreview.EXTRA_FURNITURE_ID, furniture.GetId());
+                intent.putExtra(FurnitureARPreview.EXTRA_FURNITURE_ID, furniture.getId());
                 startActivity(intent);
             }
         });
 
         Camera camera = sceneView.getScene().getCamera();
-        camera.setLocalPosition(new Vector3(0f, furniture.GetModelRadius(), furniture.GetModelRadius()));
+        camera.setLocalPosition(new Vector3(0f, furniture.getModelRadius(), furniture.getModelRadius()));
         camera.setLocalRotation(Quaternion.axisAngle(Vector3.right(), -30.0f));
         //createModel(modelPath);
     }
@@ -125,7 +125,7 @@ public class FurnitureDetails extends AppCompatActivity {
             TransformationSystem ts = makeTransformationSystem();
             if (node != null)
                 sceneView.getScene().removeChild(node);
-            node = new MyTransformableNode(furniture.GetModelRadius(), ts);
+            node = new MyTransformableNode(furniture.getModelRadius(), ts);
             node.setRenderable(model);
             node.setLocalPosition(new Vector3(0F, 0F, 0F));
             sceneView.getScene().addChild(node);

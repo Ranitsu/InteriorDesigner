@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Project project;
     RoomPlan roomPlan;
 
-    Button btnRoomPlan;
+    Button btnRoomPlan, btnFurnitures;
     PreviewRoomPlanView imgRoomPlan;
 
     @Override
@@ -67,12 +67,23 @@ public class MainActivity extends AppCompatActivity {
 
         roomPlan = databaseHelper.GetRoomPlanByProjectId(projectId);
         btnRoomPlan = findViewById(R.id.btnRoomPlan);
+        btnFurnitures = findViewById(R.id.btnFurnitures);
         imgRoomPlan = findViewById(R.id.imgRoomPlan);
 
         if (roomPlan == null) {
             btnRoomPlan.setText(getResources().getString(R.string.btnNewRoomPlan));
+            btnFurnitures.setText(getResources().getString(R.string.btnAddFurnitures));
+            btnFurnitures.setEnabled(false);
         } else {
             btnRoomPlan.setText(getResources().getString(R.string.btnEditRoomPlan));
+            btnFurnitures.setText(getResources().getString(R.string.btnAddFurnitures));
+
+            if (roomPlan.IsComplete()) {
+                btnFurnitures.setEnabled(true);
+            } else {
+                btnFurnitures.setEnabled(false);
+            }
+
             imgRoomPlan.roomPlan = roomPlan;
             imgRoomPlan.postInvalidate();
         }
@@ -89,4 +100,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onClickAddEditFurnitures(View view) {
+        Intent intent = new Intent(this, PlanFurnitureActivity.class);
+        intent.putExtra(MainActivity.EXTRA_PROJECT_ID, projectId);
+        startActivity(intent);
+    }
 }

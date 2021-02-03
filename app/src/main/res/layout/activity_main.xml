@@ -82,4 +82,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/projectNameTxt" />
+
+    <Button
+        android:id="@+id/btnFurnitures"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="onClickAddEditFurnitures"
+        android:text="@string/btnAddFurnitures"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRoomPlan" />
 </androidx.constraintlayout.widget.ConstraintLayout>
