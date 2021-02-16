@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.interiordesigner.Classes.Category;
 import com.interiordesigner.R;
 
-import java.util.List;
-
 public class CategoryCardAdapter extends RecyclerView.Adapter<CategoryCardAdapter.ViewHolder> {
     private Category[] categories;
     private Listener listener;
@@ -33,7 +31,7 @@ public class CategoryCardAdapter extends RecyclerView.Adapter<CategoryCardAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         CardView cardView = holder.cardView;
-        TextView nameView = cardView.findViewById(R.id.furnitureName);
+        TextView nameView = cardView.findViewById(R.id.furniturePlanName);
         nameView.setText(categories[position].GetName());
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override

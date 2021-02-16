@@ -1,8 +1,9 @@
 package com.interiordesigner.Classes;
 
+import com.interiordesigner.Interfaces.Card;
 import com.interiordesigner.R;
 
-public class Furniture {
+public class Furniture implements Card {
     private int id;
     private String name;
     private int categoryId;
@@ -26,7 +27,23 @@ public class Furniture {
         this.dimensions = dimensions;
     }
 
+    @Override
+    public CardType getType() {
+        return CardType.Furniture;
+    }
+
     public int getId() { return id; }
+
+    @Override
+    public int getLevel() {
+        return 3;
+    }
+
+    @Override
+    public String getText() {
+        return this.name;
+    }
+
     public String getName() { return name; }
     public int getCategoryId() { return categoryId; }
     public int getPhotoId() { return photoId; }

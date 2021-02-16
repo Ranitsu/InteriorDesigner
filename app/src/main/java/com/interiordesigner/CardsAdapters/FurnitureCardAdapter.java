@@ -52,7 +52,7 @@ public class FurnitureCardAdapter extends RecyclerView.Adapter<FurnitureCardAdap
 
         CardView cardView = holder.cardView;
         ImageView imageView = cardView.findViewById(R.id.furnitureImage);
-        TextView textView = cardView.findViewById(R.id.furnitureName);
+        TextView textView = cardView.findViewById(R.id.furniturePlanName);
         LinearLayout layout = cardView.findViewById(R.id.furnitureColorsLayout);
 
 //        Drawable drawable = ContextCompat.getDrawable(cardView.getContext(),
