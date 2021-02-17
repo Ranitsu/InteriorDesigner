@@ -8,14 +8,18 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.interiordesigner.CardsAdapters.CategoryCardAdapter;
@@ -28,6 +32,7 @@ import com.interiordesigner.Interfaces.Card;
 import com.interiordesigner.Views.FurnituresPlanEditorView;
 import com.interiordesigner.Views.PlanEditorView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,32 +65,37 @@ public class PlanFurnitureActivity extends AppCompatActivity {
         editorView.roomPlan = roomPlan;
         categories = Category.GetByParentId(0);
 
-        CategoryPlanCardAdapter adapter = new CategoryPlanCardAdapter(categories);
+        CategoryPlanCardAdapter adapter = new CategoryPlanCardAdapter(this ,categories);
         recyclerView.setAdapter(adapter);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         adapter.setListener(new CategoryPlanCardAdapter.Listener() {
             @Override
-            public void onClick(int id) {
-                categories = Category.GetByParentId(id);
-                if (categories.length == 0) {
-                    Furniture[] furnitures = Furniture.GetByCategoryId(id);
-                    adapter.addFurnitures(furnitures);
-                } else {
-                    adapter.addCategories(categories);
-                }
+            public void onClick(Card card) {
+                if (card.getType() == CardType.Category)
+                    adapter.addCards(card);
+                else
+                    createFurniture((Furniture) card);
             }
         });
     }
 
+    public void createFurniture(Furniture furniture)
+    {
+
+    }
+
+
 }
 
 class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapter.ViewHolder> {
+    private Context context;
     private List<Card> cards;
     private CategoryPlanCardAdapter.Listener listener;
 
-    public CategoryPlanCardAdapter(Card[] cards) {
+    public CategoryPlanCardAdapter(Context context, Card[] cards) {
+        this.context = context;
         this.cards = new ArrayList<>();
         this.cards.addAll(Arrays.asList(cards));
     }
@@ -99,40 +109,31 @@ class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapt
         this.listener = listener;
     }
 
-    public void addCategories(Category[] categories) {
-        if (this.cards.contains(categories[0])) {
-            this.cards.removeAll(Arrays.asList(categories));
-        } else {
-            int parentId = categories[0].GetParentId();
-            Card parent = null;
+    public void addCards(Card card) {
+        int index = this.cards.indexOf(card);
 
-            for (Card card : this.cards) {
-                if (card.getId() == parentId) {
-                    parent = card;
+        Card[] childCards = Category.GetByParentId(card.getId());
+        if (childCards.length == 0) {
+            childCards = Furniture.GetByCategoryId(card.getId());
+        }
+
+        if (childCards.length == 0) return;
+
+        if (this.cards.containsAll(Arrays.asList(childCards))) {
+            int nextIndex = 0;
+
+            for (int i = index + 1; i < this.cards.size(); i++) {
+                if (card.getLevel() == this.cards.get(i).getLevel()) {
+                    nextIndex = i;
                     break;
                 }
             }
-
-            int parentIndex = this.cards.indexOf(parent);
-            this.cards.addAll(parentIndex + 1, Arrays.asList(categories));
+            List<Card> sublist = this.cards.subList(index + 1, nextIndex);
+            this.cards.removeAll(sublist);
+        } else {
+            this.cards.addAll(index + 1, Arrays.asList(childCards));
         }
 
-        notifyDataSetChanged();
-    }
-
-    public void addFurnitures(Furniture[] furnitures) {
-        int categoryId = furnitures[0].getCategoryId();
-        Card parent = null;
-
-        for (Card card : this.cards) {
-            if (card.getType() == CardType.Category && card.getId() == categoryId) {
-                parent = card;
-                break;
-            }
-        }
-
-        int parentIndex = this.cards.indexOf(parent);
-        this.cards.addAll(parentIndex + 1, Arrays.asList(furnitures));
         notifyDataSetChanged();
     }
 
@@ -146,22 +147,43 @@ class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapt
     public void onBindViewHolder(CategoryPlanCardAdapter.ViewHolder holder, final int position) {
         CardView cardView = holder.cardView;
         TextView nameView = cardView.findViewById(R.id.furniturePlanName);
+        ImageView imageView = cardView.findViewById(R.id.furniturePlanImage);
+        imageView.setVisibility(View.INVISIBLE);
         nameView.setText(cards.get(position).getText());
         switch (cards.get(position).getLevel()) {
             case 1:
-                nameView.setBackgroundColor(Color.CYAN);
+                nameView.setBackgroundColor(Color.rgb(0, 153, 255));
                 break;
             case 2:
-                nameView.setBackgroundColor(Color.LTGRAY);
+                nameView.setBackgroundColor(Color.rgb(77, 184, 255));
+                break;
+            case 3:
+                if (cards.get(position).getType() == CardType.Furniture) {
+                    Furniture furniture = (Furniture) cards.get(position);
+                    String path = furniture.getPhotoPath();
+                    Drawable drawable = null;
+                    try {
+                        drawable = Drawable.createFromStream(context.getAssets().open(path), null);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    imageView.setImageDrawable(drawable);
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    imageView.setVisibility(View.VISIBLE);
+                } else {
+                    nameView.setBackgroundColor(Color.rgb(153, 214, 255));
+                }
+
                 break;
             default:
-                nameView.setBackgroundColor(Color.GREEN);
+                nameView.setBackgroundColor(Color.rgb(255, 255, 255));
         }
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null)
-                    listener.onClick(cards.get(position).getId());
+                    listener.onClick(cards.get(position));
         }
         });
     }
@@ -178,6 +200,6 @@ class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapt
     }
 
     public interface Listener {
-        void onClick(int id);
+        void onClick(Card card);
     }
 }
