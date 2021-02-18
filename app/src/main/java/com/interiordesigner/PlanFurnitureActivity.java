@@ -2,6 +2,7 @@ package com.interiordesigner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,7 +16,9 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Debug;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -79,15 +82,85 @@ public class PlanFurnitureActivity extends AppCompatActivity {
                     createFurniture((Furniture) card);
             }
         });
+
+        View.OnDragListener dragListener = new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                switch (event.getAction()) {
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        editorView.setBackgroundColor(Color.GREEN);
+                        break;
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        editorView.setBackgroundColor(Color.RED);
+                        break;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        editorView.setBackgroundColor(Color.WHITE);
+                        break;
+                    case DragEvent.ACTION_DROP:
+                        float dropX = event.getX();
+                        float dropY = event.getY();
+                        Furniture furniture = (Furniture) event.getLocalState();
+
+//                ImageView shape = (ImageView) LayoutInflater.from(this).inflate(
+//                        R.layout.view_shape, dropContainer, false);
+//                shape.setImageResource(state.item.getImageDrawable());
+//                shape.setX(dropX - (float) state.width / 2);
+//                shape.setY(dropY - (float) state.height / 2);
+//                shape.getLayoutParams().width = state.width;
+//                shape.getLayoutParams().height = state.height;
+//                editorView.addView(shape);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        };
+
+        editorView.setOnDragListener(dragListener);
+
+
+
     }
 
     public void createFurniture(Furniture furniture)
     {
-
     }
 
-
+//    @Override
+//    public boolean onDrag(View view, DragEvent event) {
+//        switch (event.getAction()) {
+//            case DragEvent.ACTION_DRAG_ENTERED:
+//                editorView.setBackgroundColor(Color.GREEN);
+//                break;
+//            case DragEvent.ACTION_DRAG_EXITED:
+//                editorView.setBackgroundColor(Color.RED);
+//                break;
+//            case DragEvent.ACTION_DRAG_ENDED:
+//                editorView.setBackgroundColor(Color.WHITE);
+//                break;
+//            case DragEvent.ACTION_DROP:
+//                float dropX = event.getX();
+//                float dropY = event.getY();
+//                Furniture furniture = (Furniture) event.getLocalState();
+//
+////                ImageView shape = (ImageView) LayoutInflater.from(this).inflate(
+////                        R.layout.view_shape, dropContainer, false);
+////                shape.setImageResource(state.item.getImageDrawable());
+////                shape.setX(dropX - (float) state.width / 2);
+////                shape.setY(dropY - (float) state.height / 2);
+////                shape.getLayoutParams().width = state.width;
+////                shape.getLayoutParams().height = state.height;
+////                editorView.addView(shape);
+//                break;
+//            default:
+//                break;
+//        }
+//        return true;
+//    }
 }
+
+
 
 class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapter.ViewHolder> {
     private Context context;
@@ -171,6 +244,19 @@ class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapt
                     imageView.setImageDrawable(drawable);
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     imageView.setVisibility(View.VISIBLE);
+
+                    View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            View.DragShadowBuilder shadow = new View.DragShadowBuilder(imageView);
+                            ViewCompat.startDragAndDrop(imageView, null, shadow, furniture, 0);
+                            return true;
+                        }
+                    };
+
+                    holder.itemView.setOnLongClickListener(longClickListener);
+
+
                 } else {
                     nameView.setBackgroundColor(Color.rgb(153, 214, 255));
                 }
@@ -179,12 +265,13 @@ class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapt
             default:
                 nameView.setBackgroundColor(Color.rgb(255, 255, 255));
         }
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null)
                     listener.onClick(cards.get(position));
-        }
+            }
         });
     }
 
