@@ -46,7 +46,7 @@ public class FurnitureDetails extends AppCompatActivity {
         colors = Color.Colors;
 
         int furnitureId = (Integer) getIntent().getExtras().get(EXTRA_FURNITURE_ID);
-        furniture = Furniture.GetById(furnitureId);
+        furniture = Furniture.getById(furnitureId);
 
         setContentView(R.layout.activity_furniture_details);
         sceneView = findViewById(R.id.objectPreview);

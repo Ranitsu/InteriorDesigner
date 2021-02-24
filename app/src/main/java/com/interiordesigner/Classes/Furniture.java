@@ -66,7 +66,7 @@ public class Furniture implements Card {
             )
     };
 
-    public static Furniture GetById(int id) {
+    public static Furniture getById(int id) {
         Furniture selectedFurniture = null;
 
         for (Furniture furniture : Furnitures) {
@@ -77,7 +77,7 @@ public class Furniture implements Card {
         return selectedFurniture;
     }
 
-    public static Furniture[] GetByCategoryId(int categoryId) {
+    public static Furniture[] getByCategoryId(int categoryId) {
         Furniture[] furnitures;
         int counter = 0;
 

@@ -29,7 +29,7 @@ public class FurniturePreviewActivity extends AppCompatActivity {
         categoryNameTxt.setText(category.GetName());
 
         RecyclerView furnituresRecycler = findViewById(R.id.furnituresRecycler);
-        FurnitureCardAdapter adapter = new FurnitureCardAdapter(Furniture.GetByCategoryId(categoryId));
+        FurnitureCardAdapter adapter = new FurnitureCardAdapter(Furniture.getByCategoryId(categoryId));
         furnituresRecycler.setAdapter(adapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);

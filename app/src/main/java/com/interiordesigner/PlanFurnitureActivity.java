@@ -3,43 +3,33 @@ package com.interiordesigner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Debug;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.interiordesigner.CardsAdapters.CategoryCardAdapter;
 import com.interiordesigner.Classes.CardType;
 import com.interiordesigner.Classes.Category;
 import com.interiordesigner.Classes.Furniture;
+import com.interiordesigner.Classes.FurnitureOnPlan;
 import com.interiordesigner.Classes.Point;
 import com.interiordesigner.Classes.RoomPlan;
 import com.interiordesigner.Interfaces.Card;
 import com.interiordesigner.Views.FurnituresPlanEditorView;
-import com.interiordesigner.Views.PlanEditorView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class PlanFurnitureActivity extends AppCompatActivity {
@@ -88,10 +78,10 @@ public class PlanFurnitureActivity extends AppCompatActivity {
             public boolean onDrag(View v, DragEvent event) {
                 switch (event.getAction()) {
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        editorView.setBackgroundColor(Color.GREEN);
+                        editorView.setBackgroundColor(Color.rgb(100, 255, 100));
                         break;
                     case DragEvent.ACTION_DRAG_EXITED:
-                        editorView.setBackgroundColor(Color.RED);
+                        editorView.setBackgroundColor(Color.rgb(255, 100, 100));
                         break;
                     case DragEvent.ACTION_DRAG_ENDED:
                         editorView.setBackgroundColor(Color.WHITE);
@@ -99,16 +89,14 @@ public class PlanFurnitureActivity extends AppCompatActivity {
                     case DragEvent.ACTION_DROP:
                         float dropX = event.getX();
                         float dropY = event.getY();
-                        Furniture furniture = (Furniture) event.getLocalState();
 
-//                ImageView shape = (ImageView) LayoutInflater.from(this).inflate(
-//                        R.layout.view_shape, dropContainer, false);
-//                shape.setImageResource(state.item.getImageDrawable());
-//                shape.setX(dropX - (float) state.width / 2);
-//                shape.setY(dropY - (float) state.height / 2);
-//                shape.getLayoutParams().width = state.width;
-//                shape.getLayoutParams().height = state.height;
-//                editorView.addView(shape);
+                        Furniture furniture = (Furniture) event.getLocalState();
+                        FurnitureOnPlan furnitureOnPlan = new FurnitureOnPlan(furniture);
+                        furnitureOnPlan.setAngle(0);
+                        furnitureOnPlan.setPosition(new Point((int)dropX, (int)dropY));
+
+                        roomPlan.addFurniture(furnitureOnPlan);
+                        editorView.postInvalidate();
                         break;
                     default:
                         break;
@@ -118,49 +106,12 @@ public class PlanFurnitureActivity extends AppCompatActivity {
         };
 
         editorView.setOnDragListener(dragListener);
-
-
-
     }
 
     public void createFurniture(Furniture furniture)
     {
     }
-
-//    @Override
-//    public boolean onDrag(View view, DragEvent event) {
-//        switch (event.getAction()) {
-//            case DragEvent.ACTION_DRAG_ENTERED:
-//                editorView.setBackgroundColor(Color.GREEN);
-//                break;
-//            case DragEvent.ACTION_DRAG_EXITED:
-//                editorView.setBackgroundColor(Color.RED);
-//                break;
-//            case DragEvent.ACTION_DRAG_ENDED:
-//                editorView.setBackgroundColor(Color.WHITE);
-//                break;
-//            case DragEvent.ACTION_DROP:
-//                float dropX = event.getX();
-//                float dropY = event.getY();
-//                Furniture furniture = (Furniture) event.getLocalState();
-//
-////                ImageView shape = (ImageView) LayoutInflater.from(this).inflate(
-////                        R.layout.view_shape, dropContainer, false);
-////                shape.setImageResource(state.item.getImageDrawable());
-////                shape.setX(dropX - (float) state.width / 2);
-////                shape.setY(dropY - (float) state.height / 2);
-////                shape.getLayoutParams().width = state.width;
-////                shape.getLayoutParams().height = state.height;
-////                editorView.addView(shape);
-//                break;
-//            default:
-//                break;
-//        }
-//        return true;
-//    }
 }
-
-
 
 class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapter.ViewHolder> {
     private Context context;
@@ -187,7 +138,7 @@ class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapt
 
         Card[] childCards = Category.GetByParentId(card.getId());
         if (childCards.length == 0) {
-            childCards = Furniture.GetByCategoryId(card.getId());
+            childCards = Furniture.getByCategoryId(card.getId());
         }
 
         if (childCards.length == 0) return;
@@ -245,18 +196,14 @@ class CategoryPlanCardAdapter extends RecyclerView.Adapter<CategoryPlanCardAdapt
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     imageView.setVisibility(View.VISIBLE);
 
-                    View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
+                    holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
                             View.DragShadowBuilder shadow = new View.DragShadowBuilder(imageView);
                             ViewCompat.startDragAndDrop(imageView, null, shadow, furniture, 0);
                             return true;
                         }
-                    };
-
-                    holder.itemView.setOnLongClickListener(longClickListener);
-
-
+                    });
                 } else {
                     nameView.setBackgroundColor(Color.rgb(153, 214, 255));
                 }

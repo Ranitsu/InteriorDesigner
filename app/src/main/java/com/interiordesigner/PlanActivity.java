@@ -41,8 +41,8 @@ public class PlanActivity extends AppCompatActivity {
             planEditor.roomPlan = roomPlan;
         } else {
             List<Point> points = new ArrayList<Point>();
-            points.add(new Point(150, 150, PlanEditorView.CIRCLE_RADIUS));
-            points.add(new Point(500, 150, PlanEditorView.CIRCLE_RADIUS));
+            points.add(new Point(150, 150));
+            points.add(new Point(500, 150));
 
             roomPlan = new RoomPlan(projectId, points, false);
             planEditor.roomPlan = roomPlan;

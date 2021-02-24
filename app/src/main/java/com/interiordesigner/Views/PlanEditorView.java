@@ -179,7 +179,7 @@ public class PlanEditorView extends View {
                 if (selectedPointIndex == 0 && points.size() >= 3) {
                     roomPlan.SetComplete(true);
                 } else if (!roomPlan.IsComplete()) {
-                    Point point = new Point(x, y, CIRCLE_RADIUS);
+                    Point point = new Point(x, y);
                     points.add(point);
                     selectedPoint = point;
                 }

@@ -18,7 +18,6 @@ import java.util.List;
 public class PreviewRoomPlanView extends View {
     public RoomPlan roomPlan;
 
-
     public PreviewRoomPlanView(Context context) {
         super(context);
         init();
@@ -49,7 +48,7 @@ public class PreviewRoomPlanView extends View {
         }
     }
 
-    private void DrawPoints(Canvas canvas)
+    protected void DrawPoints(Canvas canvas)
     {
         List<Point> points = roomPlan.getPoints();
         int pointsSize = points.size();

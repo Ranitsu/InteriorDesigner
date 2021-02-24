@@ -45,7 +45,7 @@ public class FurnitureARPreview extends AppCompatActivity {
         }
 
         int furnitureId = (Integer) getIntent().getExtras().get(EXTRA_FURNITURE_ID);
-        furniture = Furniture.GetById(furnitureId);
+        furniture = Furniture.getById(furnitureId);
 
         //arSceneView = findViewById(R.id.arScene);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.arFragment);
