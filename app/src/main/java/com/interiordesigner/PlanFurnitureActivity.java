@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.interiordesigner.Classes.CardType;
 import com.interiordesigner.Classes.Category;
@@ -110,6 +111,19 @@ public class PlanFurnitureActivity extends AppCompatActivity {
 
     public void createFurniture(Furniture furniture)
     {
+    }
+
+    public void onSaveClick(View view) {
+        String toastText;
+        try {
+            databaseHelper.UpdateRoomPlan(db, roomPlan);
+            toastText = "Room plan updated";
+        } catch(Exception exception) {
+            toastText = "Error";
+        }
+
+        Toast toast = Toast.makeText(this, toastText, Toast.LENGTH_LONG);
+        toast.show();
     }
 }
 

@@ -5,14 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.interiordesigner.Classes.FurnitureOnPlan;
 import com.interiordesigner.Classes.Point;
 import com.interiordesigner.Classes.RoomPlan;
 
+import java.io.IOException;
 import java.util.List;
 
 public class PreviewRoomPlanView extends View {
@@ -45,6 +48,10 @@ public class PreviewRoomPlanView extends View {
 
         if (roomPlan != null) {
             DrawPoints(canvas);
+
+            if (roomPlan.getFurnitures().size() > 0) {
+                DrawFurnitures(canvas);
+            }
         }
     }
 
@@ -70,6 +77,24 @@ public class PreviewRoomPlanView extends View {
                     points.get(pointsSize-1).getX(),
                     points.get(pointsSize-1).getY(),
                     paint);
+        }
+    }
+
+    private void DrawFurnitures(Canvas canvas) {
+        List<FurnitureOnPlan> furnitures = roomPlan.getFurnitures();
+
+        for (int i = 0; i < furnitures.size(); i++) {
+            FurnitureOnPlan furniture = furnitures.get(i);
+            String path = furniture.getPhotoPath();
+            Drawable drawable = null;
+            try {
+                drawable = Drawable.createFromStream(getContext().getAssets().open(path), null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            drawable.setBounds(furniture.getPosition().getX(), furniture.getPosition().getY(), furniture.getPosition().getX() + 200 ,furniture.getPosition().getY() + 200 );
+            drawable.draw(canvas);
         }
     }
 

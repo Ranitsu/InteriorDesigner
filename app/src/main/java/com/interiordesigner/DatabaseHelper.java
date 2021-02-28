@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.interiordesigner.Classes.Category;
 import com.interiordesigner.Classes.Furniture;
+import com.interiordesigner.Classes.FurnitureOnPlan;
 import com.interiordesigner.Classes.Point;
 import com.interiordesigner.Classes.Project;
 import com.interiordesigner.Classes.RoomPlan;
@@ -104,11 +105,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     int roomPlanId = cursor.getInt(6);
                     String roomPlanJson = cursor.getString(8);
-                    int roomPlanIsComplete = cursor.getInt(9);
+                    String roomFurnituresJson = cursor.getString(9);
+                    int roomPlanIsComplete = cursor.getInt(10);
 
                     if (roomPlanId != 0) {
                         List<Point> points = RoomPlan.getPointsFromJson(roomPlanJson);
-                        roomPlan = new RoomPlan(roomPlanId, id, points, roomPlanIsComplete == 1);
+                        List<FurnitureOnPlan> furnitures = RoomPlan.getFurnituresFromJson(roomFurnituresJson);
+                        roomPlan = new RoomPlan(roomPlanId, id, points, furnitures, roomPlanIsComplete == 1);
                     }
 
                     project = new Project(id, name, description, createDate, thumbnailId, roomPlan);
@@ -156,6 +159,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "ProjectId INTEGER," +
                 "PlanJson TEXT," +
+                "FurnituresJson TEXT," +
                 "IsComplete INTEGER" +
                 ")";
 
@@ -166,6 +170,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues roomPlanValues = new ContentValues();
         roomPlanValues.put("ProjectId", roomPlan.getProjectId());
         roomPlanValues.put("PlanJson", roomPlan.getPlanJson());
+        roomPlanValues.put("FurnituresJson", roomPlan.getFurnituresJson());
         roomPlanValues.put("IsComplete", roomPlan.IsComplete());
 
         db.insert(ROOM_PLAN, null, roomPlanValues);
@@ -175,6 +180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues roomPlanValues = new ContentValues();
         roomPlanValues.put("ProjectId", roomPlan.getId());
         roomPlanValues.put("PlanJson", roomPlan.getPlanJson());
+        roomPlanValues.put("FurnituresJson", roomPlan.getFurnituresJson());
         roomPlanValues.put("IsComplete", roomPlan.IsComplete());
 
         db.update(ROOM_PLAN, roomPlanValues, "_id = ?", new String[] { String.valueOf(roomPlan.getId()) } );
@@ -185,7 +191,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(ROOM_PLAN,
-                new String[]{"_id", "ProjectId", "PlanJson", "IsComplete"},
+                new String[]{"_id", "ProjectId", "PlanJson", "FurnituresJson", "IsComplete"},
                 "ProjectId = ?",
                 new String[] {Integer.toString(projectId)},
                 null, null, null);
@@ -194,12 +200,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             int id = cursor.getInt(0);
             int projId = cursor.getInt(1);
             String planJson = cursor.getString(2);
-            int complete = cursor.getInt(3);
+            String furnituresJson = cursor.getString(3);
+            int complete = cursor.getInt(4);
 
             List<Point> points = RoomPlan.getPointsFromJson(planJson);
+            List<FurnitureOnPlan> furnitures = RoomPlan.getFurnituresFromJson(furnituresJson);
             boolean isComplete = (complete == 1);
 
-            roomPlan = new RoomPlan(id, projId, points, isComplete);
+            roomPlan = new RoomPlan(id, projId, points, furnitures, isComplete);
         } else {
             roomPlan = null;
         }
