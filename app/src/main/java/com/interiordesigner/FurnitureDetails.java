@@ -57,7 +57,6 @@ public class FurnitureDetails extends AppCompatActivity {
         Button btnReset = findViewById(R.id.btnReset);
         Button btnAR = findViewById(R.id.btnAR);
 
-
         int[] furnitureColors = furniture.getColorsIds();
 
         RadioGroup radioGroup = findViewById(R.id.colorsRadiosGroup);

@@ -25,7 +25,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PlanFurnitureActivity"></activity>
+        <activity android:name=".ProjectARPreview"></activity>
+        <activity android:name=".Project3DPreview" />
+        <activity android:name=".PlanFurnitureActivity" />
         <activity android:name=".PlanActivity" />
         <activity android:name=".FurnitureARPreview" />
         <activity android:name=".FurnitureDetails" />

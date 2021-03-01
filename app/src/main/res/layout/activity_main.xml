@@ -25,7 +25,8 @@
         android:layout_marginTop="16dp"
         android:onClick="onClickCreateEditPlan"
         android:text="Add room plan"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnPreview3D"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgRoomPlan" />
 
@@ -45,22 +46,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/description"
-        app:layout_constraintBottom_toTopOf="@+id/descriptionTxt"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnFurnitures" />
 
     <TextView
         android:id="@+id/descriptionTxt"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:text="@string/description"
-        app:layout_constraintBottom_toTopOf="@+id/BackBtn"
+        app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Button
         android:id="@+id/button"
@@ -90,7 +93,32 @@
         android:layout_marginTop="16dp"
         android:onClick="onClickAddEditFurnitures"
         android:text="@string/btnAddFurnitures"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnPreviewAR"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnRoomPlan" />
+
+    <Button
+        android:id="@+id/btnPreview3D"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="onClickPreview3D"
+        android:text="Preview 3D"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRoomPlan"
+        app:layout_constraintTop_toBottomOf="@+id/imgRoomPlan" />
+
+    <Button
+        android:id="@+id/btnPreviewAR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="onClickPreviewAR"
+        android:text="Preview AR"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnFurnitures"
+        app:layout_constraintTop_toBottomOf="@+id/btnPreview3D" />
 </androidx.constraintlayout.widget.ConstraintLayout>

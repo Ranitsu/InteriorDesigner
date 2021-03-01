@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         projectName.setText(project.GetName());
         projectDescription.setText(project.GetDescription());
-
     }
 
     @Override
@@ -102,6 +101,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickAddEditFurnitures(View view) {
         Intent intent = new Intent(this, PlanFurnitureActivity.class);
+        intent.putExtra(MainActivity.EXTRA_PROJECT_ID, projectId);
+        startActivity(intent);
+    }
+
+    public void onClickPreview3D(View view) {
+        Intent intent = new Intent(this, Project3DPreview.class);
+        intent.putExtra(MainActivity.EXTRA_PROJECT_ID, projectId);
+        startActivity(intent);
+    }
+
+    public void onClickPreviewAR(View view) {
+        Intent intent = new Intent(this, ProjectARPreview.class);
         intent.putExtra(MainActivity.EXTRA_PROJECT_ID, projectId);
         startActivity(intent);
     }
