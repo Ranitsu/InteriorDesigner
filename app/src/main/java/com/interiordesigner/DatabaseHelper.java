@@ -86,35 +86,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
             SQLiteDatabase db = getReadableDatabase();
-//            Cursor cursor = db.query(PROJECT, new String[] {"_id",  "Name", "Description", "CreateDate", "ThumbnailId"},
-//                    null, null, null, null, null);
-
             Cursor cursor = db.rawQuery("SELECT * FROM " + PROJECT + " LEFT JOIN " + ROOM_PLAN + " ON " + PROJECT + "._id = " + ROOM_PLAN + ".ProjectId", new String[]{});
 
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
-                    Project project;
-                    RoomPlan roomPlan = null;
-
-                    int id = cursor.getInt(0);
-                    String name = cursor.getString(1);
-                    String description = cursor.getString(2);
-                    String createDate = cursor.getString(3);
-                    String editDate = cursor.getString(4);
-                    int thumbnailId = cursor.getInt(5);
-
-                    int roomPlanId = cursor.getInt(6);
-                    String roomPlanJson = cursor.getString(8);
-                    String roomFurnituresJson = cursor.getString(9);
-                    int roomPlanIsComplete = cursor.getInt(10);
-
-                    if (roomPlanId != 0) {
-                        List<Point> points = RoomPlan.getPointsFromJson(roomPlanJson);
-                        List<FurnitureOnPlan> furnitures = RoomPlan.getFurnituresFromJson(roomFurnituresJson);
-                        roomPlan = new RoomPlan(roomPlanId, id, points, furnitures, roomPlanIsComplete == 1);
-                    }
-
-                    project = new Project(id, name, description, createDate, thumbnailId, roomPlan);
+                    Project project = ParseProject(cursor);
                     projects.add(project);
 
                     cursor.moveToNext();
@@ -132,23 +108,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Project project = new Project();
 
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query("Project",
-            new String[]{"_id", "Name", "Description", "CreateDate", "ThumbnailId"},
-            "_id = ?",
-            new String[]{Integer.toString(projectId)},
-            null, null, null);
+//        Cursor cursor = db.query("Project",
+//            new String[]{"_id", "Name", "Description", "CreateDate", "ThumbnailId"},
+//            "_id = ?",
+//            new String[]{Integer.toString(projectId)},
+//            null, null, null);
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + PROJECT + " LEFT JOIN " + ROOM_PLAN + " ON " + PROJECT + "._id = " + ROOM_PLAN + ".ProjectId WHERE " + PROJECT + "._id = ? ", new String[]{Integer.toString(projectId)});
 
         if (cursor.moveToFirst()) {
-            int id = cursor.getInt(0);
-            String name = cursor.getString(1);
-            String description = cursor.getString(2);
-            String createDate = cursor.getString(3);
-            int thumbnailId = cursor.getInt(4);
-
-            project = new Project(id, name, description, createDate, thumbnailId);
+            project = ParseProject(cursor);
         }
 
         cursor.close();
+        return project;
+    }
+
+    private Project ParseProject(Cursor cursor) {
+        Project project;
+        RoomPlan roomPlan = null;
+
+        int id = cursor.getInt(0);
+        String name = cursor.getString(1);
+        String description = cursor.getString(2);
+        String createDate = cursor.getString(3);
+        String editDate = cursor.getString(4);
+        int thumbnailId = cursor.getInt(5);
+
+        int roomPlanId = cursor.getInt(6);
+        String roomPlanJson = cursor.getString(8);
+        String roomFurnituresJson = cursor.getString(9);
+        int roomPlanIsComplete = cursor.getInt(10);
+
+        if (roomPlanId != 0) {
+            List<Point> points = RoomPlan.getPointsFromJson(roomPlanJson);
+            List<FurnitureOnPlan> furnitures = RoomPlan.getFurnituresFromJson(roomFurnituresJson);
+            roomPlan = new RoomPlan(roomPlanId, id, points, furnitures, roomPlanIsComplete == 1);
+        }
+
+        project = new Project(id, name, description, createDate, thumbnailId, roomPlan);
+
         return project;
     }
 
